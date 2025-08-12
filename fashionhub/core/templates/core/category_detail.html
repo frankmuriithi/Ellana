@@ -1,0 +1,73 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block content %}
+<section class="category-detail-section">
+  <div class="container">
+    <!-- Category Header -->
+    <div class="category-header" style="--bg-color: {{ category.color|default:'var(--primary)' }};"></div>
+      <div class="category-header-content">
+        <h1 class="category-title">{{ category.name }}</h1>
+        <p class="category-description">{{ category.description|default:"Discover our premium collection" }}</p>
+      </div>
+      {% if category.image %}
+      <div class="category-header-image">
+        <img src="{{ category.image.url }}" alt="{{ category.name }}">
+      </div>
+      {% endif %}
+    </div>
+
+    <!-- Sorting Options -->
+    <div class="sorting-options">
+      <span>Sort by:</span>
+      <a href="?sort=newest" class="sort-option {% if sort == 'newest' %}active{% endif %}">Newest</a>
+      <a href="?sort=price_low" class="sort-option {% if sort == 'price_low' %}active{% endif %}">Price: Low to High</a>
+      <a href="?sort=price_high" class="sort-option {% if sort == 'price_high' %}active{% endif %}">Price: High to Low</a>
+      <a href="?sort=popular" class="sort-option {% if sort == 'popular' %}active{% endif %}">Most Popular</a>
+    </div>
+
+    <!-- Outfits Grid -->
+    <div class="outfits-grid">
+      {% for outfit in outfits %}
+      <div class="outfit-card">
+        <a href="{% url 'outfit_detail' outfit.id %}">
+          <div class="outfit-image-container">
+            {% if outfit.images.first %}
+            <img src="{{ outfit.images.first.image.url }}" alt="{{ outfit.name }}" class="outfit-image">
+            {% else %}
+            <div class="outfit-placeholder">
+              <i class="fas fa-tshirt"></i>
+            </div>
+            {% endif %}
+            <div class="outfit-badges">
+              {% if outfit.is_new %}
+              <span class="new-badge">New</span>
+              {% endif %}
+              {% if outfit.discount_percentage %}
+              <span class="discount-badge">-{{ outfit.discount_percentage }}%</span>
+              {% endif %}
+            </div>
+          </div>
+          <div class="outfit-info">
+            <h3 class="outfit-name">{{ outfit.name }}</h3>
+            <p class="outfit-designer">By {{ outfit.designer.user.username }}</p>
+            <div class="outfit-price">
+              <span class="current-price">Ksh {{ outfit.price }}</span>
+              {% if outfit.old_price %}
+              <span class="old-price">Ksh {{ outfit.old_price }}</span>
+              {% endif %}
+            </div>
+          </div>
+        </a>
+      </div>
+      {% empty %}
+      <div class="no-outfits">
+        <img src="{% static 'images/empty-collection.svg' %}" alt="No outfits available">
+        <h3>No outfits found in this category</h3>
+        <a href="{% url 'outfit_list' %}" class="btn-primary">Browse All Outfits</a>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endblock %}

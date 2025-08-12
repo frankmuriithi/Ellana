@@ -1,0 +1,11 @@
+{% extends 'core/base.html' %}
+{% block title %}{{ outfit.name }}{% endblock %}
+{% block content %}
+<h1>{{ outfit.name }}</h1>
+<p>{{ outfit.description }}</p>
+<p>Price: {{ outfit.price }}</p>
+<form method="post" action="{% url 'add_to_cart' outfit.pk %}">
+  {% csrf_token %}
+  <button type="submit">Add to cart</button>
+</form>
+{% endblock %}

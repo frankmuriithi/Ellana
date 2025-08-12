@@ -1,0 +1,52 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block content %}
+<section class="categories-section">
+  <div class="container">
+    <!-- Animated Header -->
+    <div class="section-header animate-on-scroll">
+      <h1 class="section-title">Explore Collections</h1>
+      <p class="section-subtitle">Discover African fashion by category</p>
+    </div>
+
+    <!-- Categories Grid -->
+    <div class="categories-grid">
+      {% for category in categories %}
+      <a href="{% url 'category_detail' category.slug %}" class="category-card" style="--category-color: {{ category.color|default:'#FF6B6B' }}">
+        <div class="category-image-container">
+          {% if category.image %}
+          <img src="{{ category.image.url }}" alt="{{ category.name }}" class="category-image">
+          {% else %}
+          <div class="category-placeholder">
+            <i class="fas fa-tshirt"></i>
+          </div>
+          {% endif %}
+          <div class="category-overlay"></div>
+        </div>
+        <h3 class="category-title">{{ category.name }}</h3>
+        <div class="category-hover-content">
+          <span>View Collection</span>
+          <i class="fas fa-arrow-right"></i>
+        </div>
+      </a>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<!-- Animated Dropdown for Mobile -->
+<div class="mobile-categories-dropdown">
+  <button class="dropdown-toggle">
+    Browse Categories
+    <i class="fas fa-chevron-down"></i>
+  </button>
+  <div class="dropdown-menu">
+    {% for category in categories %}
+    <a href="{% url 'category_detail' category.slug %}" class="dropdown-item">
+      {{ category.name }}
+    </a>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

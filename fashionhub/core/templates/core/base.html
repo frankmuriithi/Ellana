@@ -1,0 +1,131 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ellana FashionHub | {% block title %}{% endblock %}</title>
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+  <!-- Header with Navigation -->
+  <header class="main-header">
+    <div class="container">
+      <div class="logo">
+        <a href="{% url 'outfit_list' %}">Ellana Fashion<span>Hub</span></a>
+      </div>
+      
+      <nav class="main-nav">
+        <ul class="nav-list">
+          <li><a href="{% url 'outfit_list' %}" class="nav-link">Home</a></li>
+          <li><a href="{% url 'category_list' %}" class="nav-link">Categories</a></li>
+          
+          {% if user.is_authenticated %}
+            <li><a href="{% url 'profile' %}" class="nav-link">Profile</a></li>
+            <li class="cart-link">
+              <a href="{% url 'view_cart' %}" class="nav-link">
+                <i class="fas fa-shopping-bag"></i>
+                <span class="cart-count">
+                  {% with cart=request.session.cart %}
+                    {{ cart.values|length|default:"0" }}
+                  {% endwith %}
+                </span>
+              </a>
+            </li>
+            
+            {% if user.is_superuser %}
+              <li><a href="{% url 'add_outfit' %}" class="nav-link">Add Outfit</a></li>
+              <li><a href="{% url 'order_history' %}" class="nav-link">Orders</a></li>
+            {% endif %}
+            
+            <li>
+              <form method="POST" action="{% url 'logout' %}" class="logout-form">
+                {% csrf_token %}
+                <button type="submit" class="logout-btn">
+                  <i class="fas fa-sign-out-alt"></i> Logout
+                </button>
+              </form>
+            </li>
+          {% else %}
+            <li><a href="{% url 'login' %}" class="nav-link">Login</a></li>
+            <li><a href="{% url 'signup' %}" class="nav-link signup-btn">Sign Up</a></li>
+          {% endif %}
+        </ul>
+      </nav>
+      
+      <div class="mobile-menu-toggle">
+        <i class="fas fa-bars"></i>
+      </div>
+    </div>
+  </header>
+
+  <!-- Notification Messages -->
+  {% if messages %}
+  <div class="notification-container">
+    {% for message in messages %}
+    <div class="notification {{ message.tags }}">
+      {{ message }}
+      <span class="close-notification">&times;</span>
+    </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  <!-- Main Content -->
+  <main class="main-content">
+    {% block content %}{% endblock %}
+  </main>
+
+  <!-- Footer -->
+  <footer class="main-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-col">
+          <h3>Ellana FashionHub</h3>
+          <p>Curated African fashion designs delivered to your doorstep.</p>
+          <div class="social-links">
+            <a href="#"><i class="fab fa-instagram"></i></a>
+            <a href="#"><i class="fab fa-twitter"></i></a>
+            <a href="#"><i class="fab fa-facebook-f"></i></a>
+          </div>
+        </div>
+        
+        <div class="footer-col">
+          <h4>Quick Links</h4>
+          <ul>
+            <li><a href="{% url 'outfit_list' %}">Home</a></li>
+            <li><a href="#">About Us</a></li>
+            <li><a href="#">Contact</a></li>
+          </ul>
+        </div>
+        
+        <div class="footer-col">
+          <h4>Customer Care</h4>
+          <ul>
+            <li><a href="#">FAQs</a></li>
+            <li><a href="#">Shipping Policy</a></li>
+            <li><a href="#">Returns</a></li>
+          </ul>
+        </div>
+        
+        <div class="footer-col">
+          <h4>Legal</h4>
+          <ul>
+            <li><a href="#">Terms of Service</a></li>
+            <li><a href="#">Privacy Policy</a></li>
+          </ul>
+        </div>
+      </div>
+      
+      <div class="copyright">
+        <p>&copy; {% now "Y" %} Ellana FashionHub. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="{% static 'js/main.js' %}"></script>
+  {% block extra_js %}{% endblock %}
+</body>
+</html>
