@@ -1,0 +1,68 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="compare-page">
+    <div class="compare-header">
+        <h1><i class="fas fa-exchange-alt"></i> Compare Products</h1>
+        <div class="compare-info">
+            <span class="item-count">{{ compare_items.count }}/4 items</span>
+            <button class="btn clear-all">Clear All</button>
+        </div>
+    </div>
+
+    {% if compare_items %}
+    <div class="compare-table-container">
+        <table class="compare-table">
+            <thead>
+                <tr>
+                    <th class="feature-column">Features</th>
+                    {% for item in compare_items %}
+                    <th class="product-column">
+                        <div class="product-header">
+                            <div class="product-image">
+                                <img src="{{ item.outfit.image.url }}" alt="{{ item.outfit.name }}">
+                                <button class="remove-compare" data-outfit-id="{{ item.outfit.id }}">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                            <h3 class="product-name">{{ item.outfit.name }}</h3>
+                            <p class="product-price">${{ item.outfit.price }}</p>
+                            <button class="btn add-to-cart">Add to Cart</button>
+                        </div>
+                    </th>
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Brand</td>
+                    {% for item in compare_items %}
+                    <td>{{ item.outfit.brand|default:"-" }}</td>
+                    {% endfor %}
+                </tr>
+                <tr>
+                    <td>Color</td>
+                    {% for item in compare_items %}
+                    <td>{{ item.outfit.color }}</td>
+                    {% endfor %}
+                </tr>
+                <tr>
+                    <td>Material</td>
+                    {% for item in compare_items %}
+                    <td>{{ item.outfit.material|default:"-" }}</td>
+                    {% endfor %}
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div class="empty-compare">
+        <i class="fas fa-exchange-alt"></i>
+        <h3>Nothing to compare</h3>
+        <p>Add items to compare their features</p>
+        <a href="{% url 'outfit_list' %}" class="btn primary-btn">Continue Shopping</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

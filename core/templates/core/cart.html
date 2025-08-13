@@ -1,0 +1,12 @@
+{% extends 'core/base.html' %}
+{% block title %}Cart{% endblock %}
+{% block content %}
+<h2>Your Cart</h2>
+<ul>
+  {% for item in items %}
+    <li>{{ item.outfit.name }} x {{ item.quantity }} = {{ item.subtotal }}</li>
+  {% endfor %}
+</ul>
+<p>Total: {{ total }}</p>
+<a href="{% url 'place_order' %}">Place Order</a>
+{% endblock %}

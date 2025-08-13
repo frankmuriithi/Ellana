@@ -1,0 +1,597 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}Discover African Fashion | FashionHub{% endblock %}
+
+{% block content %}
+<!-- Hero Section with Parallax Effect -->
+<section class="hero-section">
+  <div class="hero-slideshow">
+    <div class="slide active slide-1">
+      <div class="hero-content">
+        <h1 class="hero-title">Elevate Your Style</h1>
+        <p class="hero-subtitle">Discover Authentic African Fashion</p>
+        <a href="#featured" class="hero-btn pulse">Shop Now</a>
+      </div>
+    </div>
+    <div class="slide slide-2">
+      <div class="hero-content">
+        <h1 class="hero-title">New Collection</h1>
+        <p class="hero-subtitle">Handcrafted with Cultural Heritage</p>
+        <a href="#featured" class="hero-btn pulse">Explore</a>
+      </div>
+    </div>
+    <div class="slide slide-3">
+      <div class="hero-content">
+        <h1 class="hero-title">Summer Special</h1>
+        <p class="hero-subtitle">Up to 40% Off Selected Items</p>
+        <a href="#featured" class="hero-btn pulse">View Offers</a>
+      </div>
+    </div>
+  </div>
+  <div class="slide-dots"></div>
+</section>
+
+<!-- Featured Categories Section -->
+<section class="categories-section">
+  <div class="container">
+    <h2 class="section-title animate-on-scroll">Shop by Category</h2>
+    <div class="categories-scroller">
+      {% for category in categories %}
+      <div class="category-card">
+        <div class="category-img" style="background-image: url('{{ category.image.url }}')">
+          <div class="category-overlay"></div>
+          <h3>{{ category.name }}</h3>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<!-- Main Outfits Section -->
+<section class="outfits-section" id="featured">
+  <div class="container">
+    <div class="section-header">
+      <h1 class="section-title animate-on-scroll">Our Collection</h1>
+      <p class="section-subtitle animate-on-scroll">Handcrafted African designs for every occasion</p>
+    </div>
+
+    <!-- Enhanced Filter Bar -->
+    <div class="filter-bar animate-on-scroll">
+      <div class="filter-group">
+        <div class="filter-toggle">
+          <i class="fas fa-sliders-h"></i>
+          <span>Filters</span>
+        </div>
+        <div class="filter-dropdown">
+          <div class="filter-option">
+            <label for="category-filter">Category:</label>
+            <select id="category-filter" class="filter-select">
+              <option value="all">All Categories</option>
+              {% for category in categories %}
+              <option value="{{ category.slug }}">{{ category.name }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="filter-option">
+            <label for="sort-by">Sort by:</label>
+            <select id="sort-by" class="filter-select">
+              <option value="newest">Newest First</option>
+              <option value="price-low">Price: Low to High</option>
+              <option value="price-high">Price: High to Low</option>
+              <option value="popular">Most Popular</option>
+            </select>
+          </div>
+          <div class="filter-option">
+            <label for="price-range">Price Range:</label>
+            <div class="range-slider">
+              <input type="range" min="0" max="10000" value="10000" class="slider" id="price-range">
+              <span class="price-range-value">Up to Ksh 10,000</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="view-toggle">
+        <button class="view-option active" data-view="grid"><i class="fas fa-th"></i></button>
+        <button class="view-option" data-view="list"><i class="fas fa-list"></i></button>
+      </div>
+    </div>
+
+    <!-- Outfits Grid/List View -->
+    <div class="outfits-container view-grid">
+      {% for outfit in outfits %}
+      <div class="outfit-card" data-category="{{ outfit.category.slug }}" data-price="{{ outfit.price }}">
+        <a href="{% url 'outfit_detail' outfit.pk %}" class="outfit-link">
+          <div class="outfit-image-container">
+            {% if outfit.images %}
+            <img src="{{ outfit.image.url }}" alt="{{ outfit.name }}" class="outfit-image">
+            {% else %}
+            <img src="{% static 'images/placeholder.jpg' %}" alt="No image available" class="outfit-image">
+            {% endif %}
+            <div class="outfit-overlay">
+              <button class="quick-view-btn">Quick View</button>
+            </div>
+            {% if outfit.is_new %}
+            <span class="new-badge">New</span>
+            {% endif %}
+            {% if outfit.discount_percentage %}
+            <span class="discount-badge">-{{ outfit.discount_percentage }}%</span>
+            {% endif %}
+          </div>
+          <div class="outfit-info">
+            <h3 class="outfit-name">{{ outfit.name }}</h3>
+            <p class="outfit-designer">By {{ outfit.designer.user.username }}</p>
+            <div class="outfit-meta">
+              <div class="outfit-price">
+                <span class="current-price">Ksh {{ outfit.price }}</span>
+                {% if outfit.old_price %}
+                <span class="old-price">Ksh {{ outfit.old_price }}</span>
+                {% endif %}
+              </div>
+              <div class="outfit-rating">
+                <i class="fas fa-star"></i>
+                <span>4.8</span>
+              </div>
+            </div>
+          </div>
+        </a>
+        <div class="outfit-actions">
+          <button class="add-to-cart-btn"  data-outfit-id="{{ outfit.id }}" >
+            <i class="fas fa-shopping-bag"></i> Add to Cart
+          </button>
+          <button class="wishlist-btn" data-outfit-id="{{ outfit.id }}">
+            <i class="far fa-heart"></i>
+          </button>
+          <button class="compare-btn" data-outfit-id="{{ outfit.id }}">
+            <i class="fas fa-exchange-alt"></i>
+            <span class="compare-counter">{{ request.user.compare_items.count }}</span>
+          </button>
+        </div>
+      </div>
+      {% empty %}
+      <div class="no-outfits">
+        <img src="{% static 'images/empty-collection.svg' %}" alt="No outfits available" class="empty-icon">
+        <h3>No outfits available yet</h3>
+        <p>Check back soon for our latest collections</p>
+        {% if user.is_superuser %}
+        <a href="{% url 'outfit_create' %}" class="add-outfit-btn">Add Your First Outfit</a>
+        {% endif %}
+      </div>
+      {% endfor %}
+    </div>
+
+    <!-- Pagination -->
+    {% if is_paginated %}
+    <div class="pagination animate-on-scroll">
+      {% if page_obj.has_previous %}
+      <a href="?page={{ page_obj.previous_page_number }}" class="page-link">
+        <i class="fas fa-chevron-left"></i> Previous
+      </a>
+      {% endif %}
+      
+      <div class="page-numbers">
+        {% for num in page_obj.paginator.page_range %}
+        {% if page_obj.number == num %}
+        <span class="current-page">{{ num }}</span>
+        {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+        <a href="?page={{ num }}" class="page-link">{{ num }}</a>
+        {% endif %}
+        {% endfor %}
+      </div>
+      
+      {% if page_obj.has_next %}
+      <a href="?page={{ page_obj.next_page_number }}" class="page-link">
+        Next <i class="fas fa-chevron-right"></i>
+      </a>
+      {% endif %}
+    </div>
+    {% endif %}
+  </div>
+</section>
+
+<!-- Newsletter Section -->
+<section class="newsletter-section">
+  <div class="container">
+    <div class="newsletter-box">
+      <div class="newsletter-content">
+        <h3>Stay Updated</h3>
+        <p>Subscribe to our newsletter for exclusive offers and new arrivals</p>
+      </div>
+      <form class="newsletter-form">
+        <input type="email" placeholder="Your email address" required>
+        <button type="submit" class="subscribe-btn">Subscribe</button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- Quick View Modal -->
+<div class="quick-view-modal">
+  <div class="modal-overlay"></div>
+  <div class="modal-content">
+    <button class="close-modal"><i class="fas fa-times"></i></button>
+    <div class="modal-body">
+      <!-- Content will be loaded via AJAX -->
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // Hero Slider
+  const slides = document.querySelectorAll('.hero-slideshow .slide');
+  const dotsContainer = document.querySelector('.slide-dots');
+  let currentSlide = 0;
+  
+  // Create dots
+  slides.forEach((slide, index) => {
+    const dot = document.createElement('span');
+    dot.classList.add('dot');
+    if(index === 0) dot.classList.add('active');
+    dot.addEventListener('click', () => goToSlide(index));
+    dotsContainer.appendChild(dot);
+  });
+  
+  function goToSlide(index) {
+    slides.forEach(slide => slide.classList.remove('active'));
+    document.querySelectorAll('.dot').forEach(dot => dot.classList.remove('active'));
+    
+    currentSlide = index;
+    slides[currentSlide].classList.add('active');
+    document.querySelectorAll('.dot')[currentSlide].classList.add('active');
+  }
+  
+  function nextSlide() {
+    goToSlide((currentSlide + 1) % slides.length);
+  }
+  
+  // Auto slide every 5 seconds
+  setInterval(nextSlide, 5000);
+  
+  // View Toggle
+  const viewOptions = document.querySelectorAll('.view-option');
+  const outfitsContainer = document.querySelector('.outfits-container');
+  
+  viewOptions.forEach(option => {
+    option.addEventListener('click', function() {
+      viewOptions.forEach(opt => opt.classList.remove('active'));
+      this.classList.add('active');
+      outfitsContainer.className = 'outfits-container view-' + this.dataset.view;
+    });
+  });
+  
+  // Price Range Filter
+  const priceRange = document.getElementById('price-range');
+  const priceRangeValue = document.querySelector('.price-range-value');
+  
+  priceRange.addEventListener('input', function() {
+    const maxPrice = this.value;
+    priceRangeValue.textContent = `Up to Ksh ${maxPrice}`;
+    
+    document.querySelectorAll('.outfit-card').forEach(card => {
+      const price = parseInt(card.dataset.price);
+      if(price <= maxPrice) {
+        card.style.display = 'block';
+      } else {
+        card.style.display = 'none';
+      }
+    });
+  });
+  
+  // Quick View Modal
+  const quickViewBtns = document.querySelectorAll('.quick-view-btn');
+  const quickViewModal = document.querySelector('.quick-view-modal');
+  const closeModal = document.querySelector('.close-modal');
+  
+  quickViewBtns.forEach(btn => {
+    btn.addEventListener('click', function(e) {
+      e.preventDefault();
+      const outfitId = this.closest('.outfit-card').querySelector('.add-to-cart-btn').dataset.outfitId;
+      
+      // Simulate loading content
+      quickViewModal.querySelector('.modal-body').innerHTML = `
+        <div class="loading-spinner">
+          <div class="spinner"></div>
+        </div>
+      `;
+      
+      quickViewModal.classList.add('active');
+      
+      // In a real implementation, you would fetch the outfit details via AJAX
+      setTimeout(() => {
+        quickViewModal.querySelector('.modal-body').innerHTML = `
+          <div class="modal-product">
+            <div class="modal-product-images">
+              <div class="main-image">
+                <img src="{% static 'images/placeholder.jpg' %}" alt="Product Image">
+              </div>
+              <div class="thumbnail-images">
+                <div class="thumbnail active"><img src="{% static 'images/placeholder.jpg' %}" alt="Thumbnail"></div>
+                <div class="thumbnail"><img src="{% static 'images/placeholder.jpg' %}" alt="Thumbnail"></div>
+                <div class="thumbnail"><img src="{% static 'images/placeholder.jpg' %}" alt="Thumbnail"></div>
+              </div>
+            </div>
+            <div class="modal-product-details">
+              <h3>${outfitId} - Sample Outfit</h3>
+              <div class="price">Ksh 5,999</div>
+              <div class="description">
+                <p>This is a sample product description. In a real implementation, this would be loaded from the database.</p>
+              </div>
+              <div class="size-selector">
+                <label>Size:</label>
+                <div class="size-options">
+                  <button class="size-option">S</button>
+                  <button class="size-option active">M</button>
+                  <button class="size-option">L</button>
+                  <button class="size-option">XL</button>
+                </div>
+              </div>
+              <div class="quantity-selector">
+                <label>Quantity:</label>
+                <div class="quantity-control">
+                  <button class="quantity-btn minus">-</button>
+                  <input type="number" value="1" min="1">
+                  <button class="quantity-btn plus">+</button>
+                </div>
+              </div>
+              <div class="modal-actions">
+                <button class="add-to-cart-btn">Add to Cart</button>
+                <button class="wishlist-btn"><i class="far fa-heart"></i></button>
+              </div>
+            </div>
+          </div>
+        `;
+      }, 800);
+    });
+  });
+  
+  closeModal.addEventListener('click', () => {
+    quickViewModal.classList.remove('active');
+  });
+  
+  quickViewModal.querySelector('.modal-overlay').addEventListener('click', () => {
+    quickViewModal.classList.remove('active');
+  });
+  
+  // Animation on Scroll
+  const animateElements = document.querySelectorAll('.animate-on-scroll');
+  
+  function checkAnimation() {
+    animateElements.forEach(element => {
+      const elementPosition = element.getBoundingClientRect().top;
+      const screenPosition = window.innerHeight / 1.2;
+      
+      if(elementPosition < screenPosition) {
+        element.classList.add('animated');
+      }
+    });
+  }
+  
+  window.addEventListener('scroll', checkAnimation);
+  checkAnimation(); // Run once on page load
+});
+
+// JavaScript (in your template or static JS file)
+function addToCart(outfitId) {
+    $.ajax({
+        url: '/add-to-cart/',  // Make sure this matches your URL pattern
+        method: 'POST',
+        data: {
+            'outfit_id': outfitId,
+            'quantity': 1,  // You can change this if needed
+            'csrfmiddlewaretoken': '{{ csrf_token }}'
+        },
+        success: function(response) {
+            if (response.success) {
+                alert(response.message);
+                // Update cart count in navbar
+                $('.cart-count').text(response.cart_count);
+            } else {
+                alert('Error: ' + response.message);
+            }
+        },
+        error: function(xhr) {
+            alert('Request failed: ' + xhr.statusText);
+        }
+    });
+}
+
+// Wishlist Button Handler
+document.querySelectorAll('.wishlist-btn').forEach(button => {
+  button.addEventListener('click', function() {
+    const outfitId = this.dataset.outfitId;
+    
+    fetch('/toggle-wishlist/', {
+      method: 'POST',
+      headers: {
+        'X-CSRFToken': '{{ csrf_token }}',
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: `outfit_id=${outfitId}`
+    })
+    .then(response => response.json())
+    .then(data => {
+      if(data.success) {
+        this.innerHTML = data.on_wishlist ? '❤️' : '♡';
+        alert(data.on_wishlist ? 'Added to wishlist!' : 'Removed');
+      }
+    });
+  });
+});
+
+// Compare Button Handler
+document.querySelectorAll('.compare-btn').forEach(button => {
+  button.addEventListener('click', function() {
+    const outfitId = this.dataset.outfitId;
+    
+    fetch('/add-to-compare/', {
+      method: 'POST',
+      headers: {
+        'X-CSRFToken': '{{ csrf_token }}',
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: `outfit_id=${outfitId}`
+    })
+    .then(response => response.json())
+    .then(data => {
+      alert(data.message);
+      if(data.success) {
+        // Update compare counter
+        const counter = document.querySelector('.compare-counter');
+        if(counter) {
+          const current = parseInt(counter.textContent);
+          counter.textContent = data.added ? current + 1 : current - 1;
+        }
+      }
+    });
+  });
+});
+
+// Cart Functions
+function addToCart(outfitId, quantity = 1) {
+  fetch('/add-to-cart/', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-CSRFToken': getCookie('csrftoken'),
+    },
+    body: JSON.stringify({
+      outfit_id: outfitId,
+      quantity: quantity
+    })
+  })
+  .then(response => response.json())
+  .then(data => {
+    if (data.success) {
+      showNotification('Item added to cart!', 'success');
+      updateCartCount(data.cart_count);
+    } else {
+      showNotification(data.message || 'Error adding to cart', 'error');
+    }
+  })
+  .catch(error => {
+    console.error('Error:', error);
+    showNotification('Network error. Please try again.', 'error');
+  });
+}
+
+// Wishlist Functions
+function toggleWishlist(outfitId, button) {
+  fetch('/toggle-wishlist/', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-CSRFToken': getCookie('csrftoken'),
+    },
+    body: JSON.stringify({
+      outfit_id: outfitId
+    })
+  })
+  .then(response => response.json())
+  .then(data => {
+    if (data.success) {
+      const icon = button.querySelector('i');
+      if (data.on_wishlist) {
+        icon.classList.replace('far', 'fas');
+        showNotification('Added to wishlist!', 'success');
+      } else {
+        icon.classList.replace('fas', 'far');
+        showNotification('Removed from wishlist', 'info');
+      }
+    }
+  })
+  .catch(error => {
+    console.error('Error:', error);
+    showNotification('Error updating wishlist', 'error');
+  });
+}
+
+// Compare Functions
+function addToCompare(outfitId, button) {
+  fetch('/add-to-compare/', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-CSRFToken': getCookie('csrftoken'),
+    },
+    body: JSON.stringify({
+      outfit_id: outfitId
+    })
+  })
+  .then(response => response.json())
+  .then(data => {
+    if (data.success) {
+      button.classList.toggle('active');
+      showNotification(
+        data.message || (button.classList.contains('active') ? 
+          'Added to compare' : 'Removed from compare'), 
+        'success'
+      );
+    }
+  })
+  .catch(error => {
+    console.error('Error:', error);
+    showNotification('Error comparing items', 'error');
+  });
+}
+
+// Helper Functions
+function getCookie(name) {
+  let cookieValue = null;
+  if (document.cookie && document.cookie !== '') {
+    const cookies = document.cookie.split(';');
+    for (let i = 0; i < cookies.length; i++) {
+      const cookie = cookies[i].trim();
+      if (cookie.substring(0, name.length + 1) === (name + '=')) {
+        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+        break;
+      }
+    }
+  }
+  return cookieValue;
+}
+
+function showNotification(message, type) {
+  // Create notification element
+  const notification = document.createElement('div');
+  notification.className = `notification ${type}`;
+  notification.innerHTML = `
+    ${message}
+    <span class="close-notification">&times;</span>
+    <div class="notification-progress"></div>
+  `;
+  
+  // Add to container
+  const container = document.querySelector('.notification-container') || createNotificationContainer();
+  container.appendChild(notification);
+  
+  // Auto-remove after 5 seconds
+  setTimeout(() => {
+    notification.classList.add('fade-out');
+    setTimeout(() => notification.remove(), 300);
+  }, 5000);
+  
+  // Close button
+  notification.querySelector('.close-notification').addEventListener('click', () => {
+    notification.remove();
+  });
+}
+
+function createNotificationContainer() {
+  const container = document.createElement('div');
+  container.className = 'notification-container';
+  document.body.appendChild(container);
+  return container;
+}
+
+function updateCartCount(count) {
+  const cartCountElements = document.querySelectorAll('.cart-count');
+  cartCountElements.forEach(el => {
+    el.textContent = count;
+  });
+}
+</script>
+{% endblock %}

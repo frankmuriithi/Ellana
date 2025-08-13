@@ -1,0 +1,10 @@
+{% extends 'core/base.html' %}
+{% block title %}Inbox{% endblock %}
+{% block content %}
+<h1>Your Messages</h1>
+<ul>
+  {% for message in messages %}
+    <li>From: {{ message.sender }} | {{ message.content }} | {{ message.sent_at }}</li>
+  {% endfor %}
+</ul>
+{% endblock %}
