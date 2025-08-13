@@ -94,6 +94,7 @@ class OutfitDetailView(DetailView):
     model = Outfit
     template_name = 'core/outfit_detail.html'
     context_object_name = 'outfit'
+    
 
 
 @method_decorator(login_required, name='dispatch')
@@ -227,7 +228,8 @@ def add_to_cart(request):
         cart_count = Cart.objects.filter(user=request.user).count()
         return JsonResponse({
             'success': True,
-            'cart_count': cart_count
+            'cart_count': cart_count,
+            'message': 'Added to cart successfully!',
         })
     except Outfit.DoesNotExist:
         return JsonResponse({'success': False, 'message': 'Outfit not found'}, status=404)
@@ -288,6 +290,14 @@ def add_to_compare(request):
         })
     except Outfit.DoesNotExist:
         return JsonResponse({'success': False, 'message': 'Outfit not found'}, status=404)
+    
+def Compare_page(request):
+    items = Compare.objects.filter(user=request.user)
+    return render(request, 'core/compare.html', {'compare_items': items})
+
+def Wishlist_page(request):
+    items = Wishlist.objects.filter(user=request.user)
+    return render(request, 'core/wishlist.html', {'wishlist_items': items})
 
 @login_required
 def place_order(request):

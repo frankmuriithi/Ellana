@@ -28,9 +28,12 @@ urlpatterns = [
     path('cart/add/<int:outfit_id>/', views.add_to_cart, name='add_to_cart'),
     path('order/place/', views.place_order, name='place_order'),
     path('orders/', views.OrderHistoryView.as_view(), name='order_history'),
-     path('add-to-cart/', add_to_cart, name='add_to_cart'),
-    path('toggle-wishlist/', toggle_wishlist, name='toggle_wishlist'),
-    path('add-to-compare/', add_to_compare, name='add_to_compare'),
+    path('add-to-cart/', add_to_cart, name='add_to_cart'),
+    path('toggle-wishlist/', views.toggle_wishlist, name='toggle_wishlist'),
+    path('add-to-compare/', views.add_to_compare, name='add_to_compare'),
+    path('compare/', views.Compare_page, name='compare'),
+    path('wishlist/', views.Wishlist_page, name='wishlist'),
+
 
     # Reviews
     path('review/new/', views.ReviewCreateView.as_view(), name='create_review'),

@@ -137,7 +137,7 @@
           </div>
         </a>
         <div class="outfit-actions">
-          <button class="add-to-cart-btn" data-outfit-id="{{ outfit.id }}">
+          <button class="add-to-cart-btn"  data-outfit-id="{{ outfit.id }}" >
             <i class="fas fa-shopping-bag"></i> Add to Cart
           </button>
           <button class="wishlist-btn" data-outfit-id="{{ outfit.id }}">
@@ -145,6 +145,7 @@
           </button>
           <button class="compare-btn" data-outfit-id="{{ outfit.id }}">
             <i class="fas fa-exchange-alt"></i>
+            <span class="compare-counter">{{ request.user.compare_items.count }}</span>
           </button>
         </div>
       </div>
@@ -373,28 +374,78 @@ document.addEventListener('DOMContentLoaded', function() {
   checkAnimation(); // Run once on page load
 });
 
-document.addEventListener('DOMContentLoaded', function() {
-  // Add to Cart functionality
-  document.querySelectorAll('.add-to-cart-btn').forEach(btn => {
-    btn.addEventListener('click', function() {
-      const outfitId = this.dataset.outfitId;
-      addToCart(outfitId);
+// JavaScript (in your template or static JS file)
+function addToCart(outfitId) {
+    $.ajax({
+        url: '/add-to-cart/',  // Make sure this matches your URL pattern
+        method: 'POST',
+        data: {
+            'outfit_id': outfitId,
+            'quantity': 1,  // You can change this if needed
+            'csrfmiddlewaretoken': '{{ csrf_token }}'
+        },
+        success: function(response) {
+            if (response.success) {
+                alert(response.message);
+                // Update cart count in navbar
+                $('.cart-count').text(response.cart_count);
+            } else {
+                alert('Error: ' + response.message);
+            }
+        },
+        error: function(xhr) {
+            alert('Request failed: ' + xhr.statusText);
+        }
+    });
+}
+
+// Wishlist Button Handler
+document.querySelectorAll('.wishlist-btn').forEach(button => {
+  button.addEventListener('click', function() {
+    const outfitId = this.dataset.outfitId;
+    
+    fetch('/toggle-wishlist/', {
+      method: 'POST',
+      headers: {
+        'X-CSRFToken': '{{ csrf_token }}',
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: `outfit_id=${outfitId}`
+    })
+    .then(response => response.json())
+    .then(data => {
+      if(data.success) {
+        this.innerHTML = data.on_wishlist ? '❤️' : '♡';
+        alert(data.on_wishlist ? 'Added to wishlist!' : 'Removed');
+      }
     });
   });
+});
 
-  // Wishlist functionality
-  document.querySelectorAll('.wishlist-btn').forEach(btn => {
-    btn.addEventListener('click', function() {
-      const outfitId = this.dataset.outfitId;
-      toggleWishlist(outfitId, this);
-    });
-  });
-
-  // Compare functionality
-  document.querySelectorAll('.compare-btn').forEach(btn => {
-    btn.addEventListener('click', function() {
-      const outfitId = this.dataset.outfitId;
-      addToCompare(outfitId, this);
+// Compare Button Handler
+document.querySelectorAll('.compare-btn').forEach(button => {
+  button.addEventListener('click', function() {
+    const outfitId = this.dataset.outfitId;
+    
+    fetch('/add-to-compare/', {
+      method: 'POST',
+      headers: {
+        'X-CSRFToken': '{{ csrf_token }}',
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: `outfit_id=${outfitId}`
+    })
+    .then(response => response.json())
+    .then(data => {
+      alert(data.message);
+      if(data.success) {
+        // Update compare counter
+        const counter = document.querySelector('.compare-counter');
+        if(counter) {
+          const current = parseInt(counter.textContent);
+          counter.textContent = data.added ? current + 1 : current - 1;
+        }
+      }
     });
   });
 });
