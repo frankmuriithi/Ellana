@@ -1,0 +1,427 @@
+{% extends "core/base.html" %}  <!-- Replace with your base template name -->
+{% load static %}
+{% block title %}About Us{% endblock %}
+
+
+{% block content %}
+
+<style>
+/* ===== Base Styles ===== */
+:root {
+  --primary-color: #d4a373;      /* Earthy orange */
+  --secondary-color: #f8edeb;     /* Soft peach */
+  --dark-color: #333;             /* Dark text */
+  --light-color: #fff;            /* White */
+  --accent-color: #c08552;        /* Darker orange */
+  --text-color: #555;             /* Body text */
+  --font-main: 'Montserrat', sans-serif;
+  --font-heading: 'Playfair Display', serif;
+}
+
+/* ===== About Hero Section ===== */
+.about-h {
+  background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), 
+              url('/static/images/hero1.jpg') center/cover no-repeat;
+  height: 70vh;
+  min-height: 500px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: var(--light-color);
+  overflow: hidden;
+}
+
+.h-title {
+  font-family: var(--font-heading);
+  font-size: clamp(2.5rem, 5vw, 4.5rem);
+  font-weight: 700;
+  margin-bottom: 1rem;
+  line-height: 1.2;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  animation: fadeInUp 1s ease-out;
+}
+
+.h-subtitle {
+  font-family: var(--font-main);
+  font-size: clamp(1.2rem, 2vw, 1.8rem);
+  font-weight: 300;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 2rem;
+  animation: fadeInUp 1s ease-out 0.3s forwards;
+  opacity: 0;
+}
+
+/* ===== Our Story Section ===== */
+.our-story {
+  padding: 6rem 0;
+  background-color: var(--light-color);
+}
+
+.h-container {
+  width: 90%;
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 3rem;
+}
+
+.story-content {
+  flex: 1;
+  min-width: 300px;
+}
+
+.s-title {
+  font-family: var(--font-heading);
+  font-size: 2.5rem;
+  font-weight: 600;
+  color: var(--dark-color);
+  margin-bottom: 1.5rem;
+  position: relative;
+  display: inline-block;
+}
+
+.s-title::after {
+  content: '';
+  position: absolute;
+  bottom: -10px;
+  left: 0;
+  width: 60px;
+  height: 3px;
+  background-color: var(--primary-color);
+}
+
+.s-text {
+  font-family: var(--font-main);
+  font-size: 1.1rem;
+  line-height: 1.8;
+  color: var(--text-color);
+  margin-bottom: 2rem;
+}
+
+.story-image {
+  flex: 1;
+  min-width: 300px;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 20px 30px rgba(0, 0, 0, 0.1);
+  transition: transform 0.5s ease;
+}
+
+.story-image:hover {
+  transform: scale(1.02);
+}
+
+.story-image img {
+  width: 100%;
+  height: auto;
+  display: block;
+  transition: transform 0.5s ease;
+}
+
+.story-image:hover img {
+  transform: scale(1.05);
+}
+
+/* ===== Mission & Values ===== */
+.mission-values {
+  padding: 6rem 0;
+  background-color: var(--secondary-color);
+}
+
+.values-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 2rem;
+  margin-top: 3rem;
+}
+
+.value-card {
+  background: var(--light-color);
+  padding: 2.5rem 2rem;
+  border-radius: 15px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+}
+
+.value-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 5px;
+  background-color: var(--primary-color);
+  transition: height 0.3s ease;
+  z-index: -1;
+}
+
+.value-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+}
+
+.value-card:hover::before {
+  height: 100%;
+}
+
+.value-card i {
+  font-size: 2.5rem;
+  color: var(--primary-color);
+  margin-bottom: 1.5rem;
+  transition: color 0.3s ease;
+}
+
+.value-card:hover i {
+  color: var(--light-color);
+}
+
+.value-card h3 {
+  font-family: var(--font-heading);
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  color: var(--dark-color);
+  transition: color 0.3s ease;
+}
+
+.value-card p {
+  font-family: var(--font-main);
+  color: var(--text-color);
+  transition: color 0.3s ease;
+}
+
+.value-card:hover h3,
+.value-card:hover p {
+  color: var(--light-color);
+}
+
+/* ===== Team Section ===== */
+.team-section {
+  padding: 6rem 0;
+  background-color: var(--light-color);
+}
+
+.team-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 3rem;
+  margin-top: 3rem;
+}
+
+.team-card {
+  text-align: center;
+  position: relative;
+  padding-bottom: 2rem;
+}
+
+.team-card::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 50px;
+  height: 3px;
+  background-color: var(--primary-color);
+  transition: width 0.3s ease;
+}
+
+.team-card:hover::after {
+  width: 100px;
+}
+
+.team-card img {
+  width: 200px;
+  height: 200px;
+  object-fit: cover;
+  border-radius: 50%;
+  margin: 0 auto 1.5rem;
+  border: 5px solid var(--secondary-color);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.team-card:hover img {
+  transform: scale(1.05);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+}
+
+.team-card h3 {
+  font-family: var(--font-heading);
+  font-size: 1.4rem;
+  margin-bottom: 0.5rem;
+  color: var(--dark-color);
+}
+
+.team-card p {
+  font-family: var(--font-main);
+  color: var(--text-color);
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+/* ===== CTA Section ===== */
+.about-cta {
+  padding: 5rem 0;
+  background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+  color: var(--light-color);
+  text-align: center;
+}
+
+.about-cta h2 {
+  font-family: var(--font-heading);
+  font-size: 2.5rem;
+  margin-bottom: 2rem;
+}
+
+.cta-button {
+  display: inline-block;
+  background-color: var(--light-color);
+  color: var(--primary-color);
+  padding: 15px 40px;
+  border-radius: 50px;
+  font-family: var(--font-main);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  border: 2px solid transparent;
+}
+
+.cta-button:hover {
+  background-color: transparent;
+  color: var(--light-color);
+  border-color: var(--light-color);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+}
+
+/* ===== Animations ===== */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ===== Responsive Adjustments ===== */
+@media (max-width: 768px) {
+  .h-container {
+    flex-direction: column;
+  }
+  
+  .story-image {
+    order: -1;
+  }
+  
+  .s-title {
+    font-size: 2rem;
+  }
+  
+  .about-h {
+    height: 50vh;
+  }
+}
+
+@media (max-width: 480px) {
+  .h-title {
+    font-size: 2.2rem;
+  }
+  
+  .h-subtitle {
+    font-size: 1rem;
+  }
+  
+  .values-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+</style>
+
+<!-- About Us Hero Section -->
+<section class="about-h">
+    <div class="h-overlay"></div>
+    <div class="container">
+        <h1 class="h-title">About Ellana FashionHub</h1>
+        <p class="h-subtitle">Where Style Meets Elegance</p>
+    </div>
+</section>
+
+<!-- Our Story Section -->
+<section class="our-story">
+    <div class="h-container">
+        <div class="story-content">
+            <h2 class="s-title">Our Story</h2>
+            <p class="s-text">
+                Founded in 2025, Ellana FashionHub began as a small boutique with a big dream: to redefine fashion by blending <strong>timeless elegance</strong> with <strong>cutting-edge trends</strong>. Today, we're a global brand loved for our curated collections that celebrate individuality.
+            </p>
+        </div>
+        <div class="story-image">
+            <img src="{% static 'images/hero2.jpg' %}" alt="Ellana FashionHub Team" class="img-fluid">
+        </div>
+    </div>
+</section>
+
+<!-- Mission & Values (Animated Cards) -->
+<section class="mission-values">
+    <div class="h-container">
+        <h2 class="section-title">Our Mission & Values</h2>
+        <div class="values-grid">
+            <div class="value-card" data-aos="fade-up">
+                <i class="fas fa-gem"></i>
+                <h3>Quality Craftsmanship</h3>
+                <p>Every stitch reflects our commitment to excellence.</p>
+            </div>
+            <div class="value-card" data-aos="fade-up" data-aos-delay="100">
+                <i class="fas fa-leaf"></i>
+                <h3>Sustainable Fashion</h3>
+                <p>Ethically sourced materials for a greener future.</p>
+            </div>
+            <div class="value-card" data-aos="fade-up" data-aos-delay="200">
+                <i class="fas fa-heart"></i>
+                <h3>Customer Joy</h3>
+                <p>Your satisfaction is our ultimate reward.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Team Section (Optional) -->
+<section class="team-section">
+    <div class="container">
+        <h2 class="section-title">Meet the Visionaries</h2>
+        <div class="team-grid">
+            <!-- Repeat for each team member -->
+            <div class="team-card" data-aos="zoom-in">
+                <img src="{% static 'images/hero2.jpg' %}" alt="Founder">
+                <h3>Esther Kabare</h3>
+                <p>Founder & Creative Director</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="about-cta">
+    <div class="container">
+        <h2>Ready to Elevate Your Wardrobe?</h2>
+        <a href="{% url 'outfit_list' %}" class="cta-button">Shop Now</a>
+    </div>
+</section>
+{% endblock %}

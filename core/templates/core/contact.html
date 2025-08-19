@@ -1,0 +1,325 @@
+{% extends "core/base.html" %}
+{% load static %}
+{% block title %}Contact Us{% endblock %}
+
+{% block content %}
+<style>
+    /* ===== Contact Page Styles ===== */
+.contact-hero {
+    background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), 
+                url('/static/images/hero1.jpg') center/cover no-repeat;
+    height: 50vh;
+    min-height: 400px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: #fff;
+    position: relative;
+    overflow: hidden;
+}
+
+.contact-hero .hero-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    font-weight: 700;
+    margin-bottom: 1rem;
+    animation: fadeInUp 0.8s ease-out;
+}
+
+.contact-hero .hero-subtitle {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1.2rem;
+    font-weight: 300;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    animation: fadeInUp 0.8s ease-out 0.3s forwards;
+    opacity: 0;
+}
+
+.contact-section {
+    padding: 5rem 0;
+    background: #fff;
+}
+
+.contact-section .container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 3rem;
+    align-items: start;
+}
+
+/* Contact Form Styles */
+.contact-form {
+    background: #f9f9f9;
+    padding: 2.5rem;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+}
+
+.form-group {
+    position: relative;
+    margin-bottom: 2rem;
+}
+
+.form-group input,
+.form-group textarea {
+    width: 100%;
+    padding: 10px 0;
+    font-size: 1rem;
+    color: #333;
+    border: none;
+    border-bottom: 1px solid #ddd;
+    outline: none;
+    background: transparent;
+    transition: all 0.3s;
+}
+
+.form-group label {
+    position: absolute;
+    top: 10px;
+    left: 0;
+    font-size: 1rem;
+    color: #999;
+    pointer-events: none;
+    transition: all 0.3s;
+}
+
+.form-group .underline {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: var(--primary-color);
+    transition: all 0.3s;
+}
+
+.form-group input:focus ~ label,
+.form-group input:valid ~ label,
+.form-group textarea:focus ~ label,
+.form-group textarea:valid ~ label {
+    top: -20px;
+    font-size: 0.8rem;
+    color: var(--primary-color);
+}
+
+.form-group input:focus ~ .underline,
+.form-group textarea:focus ~ .underline {
+    width: 100%;
+}
+
+.submit-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--primary-color);
+    color: blue;
+    border: none;
+    padding: 12px 30px;
+    border-radius: 50px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+    overflow: hidden;
+    position: relative;
+}
+
+.submit-btn i {
+    margin-left: 10px;
+    transition: all 0.3s;
+}
+
+.submit-btn:hover {
+    background: var(--accent-color);
+    transform: translateY(-3px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+.submit-btn:hover i {
+    transform: translateX(5px);
+}
+
+/* Contact Info Styles */
+.contact-info {
+    padding: 2rem;
+}
+
+.info-card {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 2rem;
+    padding: 1.5rem;
+    border-radius: 10px;
+    transition: all 0.3s;
+}
+
+.info-card:hover {
+    background: #f9f9f9;
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+}
+
+.info-card i {
+    font-size: 1.5rem;
+    color: var(--primary-color);
+    margin-right: 1.5rem;
+    margin-top: 5px;
+}
+
+.info-card h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.3rem;
+    margin-bottom: 0.5rem;
+    color: #333;
+}
+
+.info-card p {
+    font-family: 'Montserrat', sans-serif;
+    color: #666;
+    line-height: 1.6;
+}
+
+
+/* Map Section Styles */
+.map-section {
+    padding: 3rem 0 5rem;
+    background: #f9f9f9;
+}
+
+.map-container {
+    height: 400px;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    margin-top: 2rem;
+}
+
+.map-container iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+
+/* Animations */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .contact-hero {
+        height: 40vh;
+    }
+    
+    .contact-section .container {
+        grid-template-columns: 1fr;
+    }
+    
+    .contact-form,
+    .contact-info {
+        padding: 1.5rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .contact-hero .hero-title {
+        font-size: 2rem;
+    }
+    
+    .info-card {
+        flex-direction: column;
+    }
+    
+    .info-card i {
+        margin-bottom: 1rem;
+        margin-right: 0;
+    }
+}
+</style>
+<!-- Contact Hero Section -->
+<section class="contact-hero">
+    <div class="hero-overlay"></div>
+    <div class="container">
+        <h1 class="hero-title">Get In Touch</h1>
+        <p class="hero-subtitle">We'd love to hear from you</p>
+    </div>
+</section>
+
+<!-- Contact Grid Section -->
+<section class="contact-section">
+    <div class="container">
+        <!-- Contact Form -->
+        <div class="contact-form" data-aos="fade-right">
+            <h2 class="section-title">Send Us a Message</h2>
+            <form id="contactForm" class="form">
+                <div class="form-group">
+                    <input type="text" id="name" required>
+                    <label for="name">Your Name</label>
+                    <span class="underline"></span>
+                </div>
+                <div class="form-group">
+                    <input type="email" id="email" required>
+                    <label for="email">Email Address</label>
+                    <span class="underline"></span>
+                </div>
+                <div class="form-group">
+                    <input type="text" id="subject" required>
+                    <label for="subject">Subject</label>
+                    <span class="underline"></span>
+                </div>
+                <div class="form-group">
+                    <textarea id="message" rows="5" required></textarea>
+                    <label for="message">Your Message</label>
+                    <span class="underline"></span>
+                </div>
+                <button type="submit" class="submit-btn">
+                    <span>Send Message</span>
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </form>
+        </div>
+
+        <!-- Contact Info -->
+        <div class="contact-info" data-aos="fade-left">
+            <h2 class="section-title">Contact Information</h2>
+            <div class="info-card">
+                <i class="fas fa-map-marker-alt"></i>
+                <h3>Our Location</h3>
+                <p>Ellana Fashion Avenue, Kenya, Meru 111-60200</p>
+            </div>
+            <div class="info-card">
+                <i class="fas fa-envelope"></i>
+                <h3>Email Us</h3>
+                <p>estherkabare8@gmail.com</p>
+            </div>
+            <div class="info-card">
+                <i class="fas fa-phone-alt"></i>
+                <h3>Call Us</h3>
+                <p>+254 726264928</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Google Map Embed -->
+<section class="map-section" data-aos="fade-up">
+    <div class="container">
+        <h2 class="section-title">Find Us</h2>
+        <div class="map-container">
+            <iframe 
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3988.949551483035!2d37.64586027409056!3d-0.04772243550307015!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x18285e58b1f9b1d7%3A0x1c3d0693c7b5d6c1!2sMeru%2C%20Kenya!5e0!3m2!1sen!2sus!4v1691436483584!5m2!1sen!2sus" 
+                allowfullscreen="" 
+                loading="lazy">
+            </iframe>
+        </div>
+    </div>
+</section>
+{% endblock %}

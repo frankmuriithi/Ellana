@@ -1,10 +1,64 @@
 {% extends 'core/base.html' %}
 {% block title %}Profile{% endblock %}
+
 {% block content %}
-<h2>Profile</h2>
-<form method="post" enctype="multipart/form-data">
-  {% csrf_token %}
-  {{ form.as_p }}
-  <button type="submit">Save Profile</button>
-</form>
+<div class="profile-container">
+  <div class="profile-card">
+    <div class="profile-header">
+      <h2 class="profile-title">Your Profile</h2>
+      <div class="profile-avatar-container">
+        <div class="avatar-wrapper">
+          {% if user.profile.avatar %}
+            <img src="{{ user.profile.avatar.url }}" alt="Profile Avatar" class="profile-avatar" id="avatar-preview">
+          {% else %}
+            <div class="avatar-placeholder" id="avatar-preview">
+              {{ user.first_name|first|upper }}{{ user.last_name|first|upper }}
+            </div>
+          {% endif %}
+          <label for="id_avatar" class="avatar-upload-btn">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 12a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"></path>
+              <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
+              <circle cx="12" cy="7" r="4"></circle>
+            </svg>
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <form method="post" enctype="multipart/form-data" class="profile-form">
+      {% csrf_token %}
+      
+      <div class="form-grid">
+        {% for field in form %}
+          {% if field.name != 'avatar' %}
+          <div class="form-group">
+            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+            {{ field }}
+            {% if field.help_text %}
+              <small class="form-help">{{ field.help_text }}</small>
+            {% endif %}
+            {% for error in field.errors %}
+              <div class="form-error">{{ error }}</div>
+            {% endfor %}
+          </div>
+          {% endif %}
+        {% endfor %}
+      </div>
+
+      <div class="form-actions">
+        <button type="submit" class="save-btn">
+          <span class="btn-text">Save Profile</span>
+          <span class="btn-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+              <polyline points="17 21 17 13 7 13 7 21"></polyline>
+              <polyline points="7 3 7 8 15 8"></polyline>
+            </svg>
+          </span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
 {% endblock %}

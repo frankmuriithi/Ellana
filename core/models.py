@@ -39,6 +39,11 @@ class Outfit(models.Model):
     # optional thumbnail
     image = models.ImageField(upload_to='outfits/', null=True, blank=True)
     is_active = models.BooleanField(default=True)
+    #Comparison-related fields
+    brand = models.CharField(max_length=100, blank=True, null=True)
+    color = models.CharField(max_length=50, blank=True, null=True)
+    size = models.CharField(max_length=20, blank=True, null=True)
+    material = models.CharField(max_length=100, blank=True, null=True)
 
     def __str__(self):
         return self.name

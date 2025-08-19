@@ -22,7 +22,7 @@ class ProfileForm(forms.ModelForm):
 class OutfitForm(forms.ModelForm):
     class Meta:
         model = Outfit
-        fields = ('name', 'description', 'price', 'category', 'image', 'is_active')
+        fields = ('name', 'description', 'price', 'category', 'image', 'is_active', 'brand', 'color', 'size', 'material')
 
 
 class OutfitImageForm(forms.ModelForm):

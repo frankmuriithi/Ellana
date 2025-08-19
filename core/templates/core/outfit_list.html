@@ -4,6 +4,259 @@
 {% block title %}Discover African Fashion | FashionHub{% endblock %}
 
 {% block content %}
+
+<style>
+  /* Reviews Section Styles */
+.reviews-section {
+  padding: 5rem 0;
+  background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+.reviews-section::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="none"><path fill="rgba(0,0,0,0.02)" d="M0,0 L100,0 L100,100 L0,100 Z" /></svg>');
+  opacity: 0.1;
+  z-index: 0;
+}
+
+.container {
+  position: relative;
+  z-index: 1;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.section-title {
+  text-align: center;
+  font-size: 2.75rem;
+  margin-bottom: 1rem;
+  font-weight: 700;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: gradientShift 8s ease infinite;
+  background-size: 200% 200%;
+}
+
+.section-subtitle {
+  text-align: center;
+  font-size: 1.25rem;
+  color: #64748b;
+  margin-bottom: 3rem;
+  font-weight: 400;
+}
+
+.reviews-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 30px;
+  margin-bottom: 50px;
+}
+
+.review-card {
+  background: white;
+  border-radius: 16px;
+  padding: 30px;
+  box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.05);
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(0, 0, 0, 0.03);
+}
+
+.review-card::after {
+  content: "\"";  /* Fixed quote escaping */
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  font-size: 5rem;
+  color: rgba(79, 70, 229, 0.03);
+  font-family: serif;
+  line-height: 1;
+  z-index: 0;
+  opacity: 0.8;  /* Added for better visibility control */
+}
+
+.review-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.1);
+}
+
+.reviewer-info {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+  position: relative;
+  z-index: 1;
+}
+
+.reviewer-avatar {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-right: 15px;
+  border: 3px solid rgba(79, 70, 229, 0.1);
+  transition: all 0.3s ease;
+}
+
+.review-card:hover .reviewer-avatar {
+  transform: scale(1.1);
+  border-color: rgba(79, 70, 229, 0.3);
+}
+
+.reviewer-info h4 {
+  font-size: 1.1rem;
+  margin: 0;
+  color: #1e293b;
+}
+
+.rating-stars {
+  color: #fbbf24;
+  font-size: 1.1rem;
+  margin-top: 5px;
+  letter-spacing: 2px;
+}
+
+.review-text {
+  color: #475569;
+  line-height: 1.7;
+  font-size: 1rem;
+  margin-bottom: 20px;
+  position: relative;
+  z-index: 1;
+  font-style: italic;
+}
+
+.review-date {
+  color: #94a3b8;
+  font-size: 0.85rem;
+  position: relative;
+  z-index: 1;
+}
+
+.review-cta {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin-top: 30px;
+  flex-wrap: wrap;
+}
+
+.btn {
+  padding: 14px 28px;
+  border-radius: 12px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  font-size: 1rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.1);
+  transform: translateX(-100%);
+  transition: transform 0.4s ease;
+}
+
+.btn:hover::before {
+  transform: translateX(0);
+}
+
+.btn-primary {
+  background-color: #4f46e5;
+  color: white;
+  box-shadow: 0 4px 6px -1px rgba(79, 70, 229, 0.2), 0 2px 4px -1px rgba(79, 70, 229, 0.1);
+}
+
+.btn-primary:hover {
+  background-color: #4338ca;
+  transform: translateY(-3px);
+  box-shadow: 0 10px 15px -3px rgba(79, 70, 229, 0.3), 0 4px 6px -2px rgba(79, 70, 229, 0.15);
+}
+
+.btn-outline {
+  border: 2px solid #4f46e5;
+  color: #4f46e5;
+  background: transparent;
+  transition: all 0.3s ease;
+}
+
+.btn-outline:hover {
+  background-color: #4f46e5;
+  color: white;
+  transform: translateY(-3px);
+  box-shadow: 0 10px 15px -3px rgba(79, 70, 229, 0.1), 0 4px 6px -2px rgba(79, 70, 229, 0.05);
+}
+
+/* Animations */
+@keyframes gradientShift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .reviews-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .section-title {
+    font-size: 2rem;
+  }
+  
+  .review-cta {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .btn {
+    width: 100%;
+    max-width: 300px;
+  }
+}
+
+/* Micro-interactions */
+.review-card:hover .rating-stars {
+  animation: starPulse 0.6s ease;
+}
+
+@keyframes starPulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+}
+</style>
+
 <!-- Hero Section with Parallax Effect -->
 <section class="hero-section">
   <div class="hero-slideshow">
@@ -36,15 +289,22 @@
 <section class="categories-section">
   <div class="container">
     <h2 class="section-title animate-on-scroll">Shop by Category</h2>
-    <div class="categories-scroller">
-      {% for category in categories %}
-      <div class="category-card">
-        <div class="category-img" style="background-image: url('{{ category.image.url }}')">
-          <div class="category-overlay"></div>
-          <h3>{{ category.name }}</h3>
+    <div class="category-select-container">
+      <div class="select-wrapper">
+        <select id="category-select" class="modern-select" onchange="location = this.value;">
+          <option value="">-- Select Category --</option>
+          {% for category in categories %}
+          <option value="{% url 'category_detail' category.slug %}">
+            {{ category.name }}
+          </option>
+          {% endfor %}
+        </select>
+        <div class="select-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="6 9 12 15 18 9"></polyline>
+          </svg>
         </div>
       </div>
-      {% endfor %}
     </div>
   </div>
 </section>
@@ -104,7 +364,7 @@
       <div class="outfit-card" data-category="{{ outfit.category.slug }}" data-price="{{ outfit.price }}">
         <a href="{% url 'outfit_detail' outfit.pk %}" class="outfit-link">
           <div class="outfit-image-container">
-            {% if outfit.images %}
+            {% if outfit.image %}
             <img src="{{ outfit.image.url }}" alt="{{ outfit.name }}" class="outfit-image">
             {% else %}
             <img src="{% static 'images/placeholder.jpg' %}" alt="No image available" class="outfit-image">
@@ -155,7 +415,7 @@
         <h3>No outfits available yet</h3>
         <p>Check back soon for our latest collections</p>
         {% if user.is_superuser %}
-        <a href="{% url 'outfit_create' %}" class="add-outfit-btn">Add Your First Outfit</a>
+        <a href="{% url 'add_outfit' %}" class="add-outfit-btn">Add Your First Outfit</a>
         {% endif %}
       </div>
       {% endfor %}
@@ -189,6 +449,67 @@
     {% endif %}
   </div>
 </section>
+
+
+<!-- Reviews Section -->
+<section class="reviews-section">
+  <div class="container">
+    <h2 class="section-title">What Our Customers Say</h2>
+    <p class="section-subtitle">Trusted by thousands of satisfied users</p>
+    
+    <div class="reviews-grid">
+      <!-- Review Card 1 -->
+      <div class="review-card">
+        <div class="reviewer-info">
+          <img src="hero1.jpg" alt="User" class="reviewer-avatar">
+          <div>
+            <h4>Alex Johnson</h4>
+            <div class="rating-stars">★★★★★</div>
+          </div>
+        </div>
+        <p class="review-text">"This service completely transformed my workflow. The quality is outstanding and the support team is incredibly responsive."</p>
+        <div class="review-date">Posted on March 15, 2023</div>
+      </div>
+      
+      <!-- Review Card 2 -->
+      <div class="review-card">
+        <div class="reviewer-info">
+          <img src="hero2.jpg" alt="User" class="reviewer-avatar">
+          <div>
+            <h4>Sarah Miller</h4>
+            <div class="rating-stars">★★★★☆</div>
+          </div>
+        </div>
+        <p class="review-text">"I've tried many alternatives but this one stands out for its ease of use and comprehensive features. Highly recommended!"</p>
+        <div class="review-date">Posted on February 28, 2023</div>
+      </div>
+      
+      <!-- Review Card 3 -->
+      <div class="review-card">
+        <div class="reviewer-info">
+          <img src="hero3.jpg" alt="User" class="reviewer-avatar">
+          <div>
+            <h4>Michael Chen</h4>
+            <div class="rating-stars">★★★★★</div>
+          </div>
+        </div>
+        <p class="review-text">"The value for money is exceptional. I've seen significant improvements in my productivity since switching to this platform."</p>
+        <div class="review-date">Posted on January 10, 2023</div>
+      </div>
+    </div>
+    
+    <div class="review-cta">
+      {% for outfit in outfits %}
+      <!-- Link to view reviews for this outfit -->
+      <a href="{% url 'outfit_reviews' outfit_id=outfit.id %}" class="btn btn-outline">View All Reviews {{ outfit.reviews_set.count }} </a>
+  
+      <!-- Link to create a review for this outfit -->
+      <a href="{% url 'create_review' outfit_id=outfit.id %}" class="btn btn-primary">Write a Review</a>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
 
 <!-- Newsletter Section -->
 <section class="newsletter-section">

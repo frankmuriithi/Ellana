@@ -9,12 +9,14 @@ from django.contrib.auth import login, authenticate, logout
 from django.contrib import messages
 from django.utils import timezone
 from django.contrib.auth.forms import AuthenticationForm
-from django.db.models import Count
+from django.db.models import Count, Avg
 from django.views.decorators.http import require_POST
 from django.http import JsonResponse
 
-from .models import Profile, Category, Outfit, OutfitImage, Order, OrderItem, Review, Notification, Message, Cart, Wishlist, Compare
-from .forms import SignUpForm, ProfileForm, OutfitForm, OutfitImageForm, CategoryForm, ReviewForm, MessageForm
+
+
+from .models import Profile, Category, Outfit, OutfitImage, Order, OrderItem, Review, Notification, Message, Cart, Wishlist, Compare, Review
+from .forms import SignUpForm, ProfileForm, OutfitForm, OutfitImageForm, CategoryForm, ReviewForm, MessageForm, ReviewForm
 
 
 # -------------------------
@@ -78,7 +80,6 @@ class ProfileView(LoginRequiredMixin, View):
         return render(request, 'core/profile.html', {'form': form})
 
 
-# -------------------------
 # OUTFIT
 # -------------------------
 class OutfitListView(ListView):
@@ -88,6 +89,15 @@ class OutfitListView(ListView):
 
     def get_queryset(self):
         return Outfit.objects.filter(is_active=True).order_by('-created_at')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        from .models import Category   # import here or at the top
+        context['categories'] = Category.objects.all()  # pass categories to template
+        return context
+
+
+  
 
 
 class OutfitDetailView(DetailView):
@@ -377,3 +387,74 @@ class InboxView(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         return Message.objects.filter(receiver=self.request.user.profile).order_by('-sent_at')
+
+
+
+class ReviewCreateView(CreateView):
+    model = Review
+    form_class = ReviewForm
+    template_name = 'core/review_form.html'
+
+    def form_valid(self, form):
+        outfit = get_object_or_404(Outfit, pk=self.kwargs['outfit_id'])
+        form.instance.reviewer = self.request.user.profile
+        form.instance.outfit = outfit
+        return super().form_valid(form)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['outfit'] = get_object_or_404(Outfit, pk=self.kwargs['outfit_id'])
+        return context
+
+    def get_success_url(self):
+        return reverse_lazy('outfit_detail', kwargs={'pk': self.kwargs['outfit_id']})
+
+
+class OutfitReviewsView(ListView):
+    model = Review
+    template_name = 'core/reviews_list.html'
+    context_object_name = 'reviews'
+    paginate_by = 10
+
+    def get_queryset(self):
+        return Review.objects.filter(
+            outfit_id=self.kwargs['outfit_id']
+        ).select_related(
+            'reviewer__user',
+            'outfit'
+        ).order_by('-created_at')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        outfit = get_object_or_404(Outfit, pk=self.kwargs['outfit_id'])
+        
+        reviews = self.get_queryset()
+        rating_stats = reviews.aggregate(
+            avg_rating=Avg('rating'),
+            count=Count('id')
+        )
+        
+        context.update({
+            'outfit': outfit,
+            'average_rating': rating_stats['avg_rating'] or 0,
+            'review_count': rating_stats['count'],
+            'rating_distribution': reviews.values('rating').annotate(count=Count('id'))
+        })
+        return context
+
+def about_view(request):
+    return render(request, 'core/about.html')
+
+def contact_view(request):
+    if request.method == 'POST':
+        form = MessageForm(request.POST)
+        if form.is_valid():
+            message = form.save(commit=False)
+            message.sender = request.user.profile
+            message.sent_at = timezone.now()
+            message.save()
+            messages.success(request, "Message sent successfully.")
+            return redirect('contact')
+    else:
+        form = MessageForm()
+    return render(request, 'core/contact.html', {'form': form})    

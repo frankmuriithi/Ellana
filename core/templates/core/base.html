@@ -26,7 +26,7 @@
             <li><a href="{% url 'profile' %}" class="nav-link">Profile</a></li>
             <li class="cart-link">
               <a href="{% url 'view_cart' %}" class="nav-link">
-                <i class="fas fa-shopping-bag"></i>
+                <i class="fas fa-shopping-bag">shop</i>
                 <span class="cart-count">
                   {% with cart=request.session.cart %}
                     {{ cart.values|length|default:"0" }}
@@ -36,10 +36,10 @@
             </li>
             <li><!-----Links to pages----->
               <a href="{% url 'wishlist' %}" class="view-wishlist">
-                <i class="fas fa-heart"></i></a>
+                <i class="fas fa-heart"></i>favorites</a>
           </li>
           <li><a href="{% url 'compare' %}" class="view-compare">
-            <i class="fas fa-exchange-alt"></i></a></li>
+            <i class="fas fa-exchange-alt"></i>compare</a></li>
             
             {% if user.is_superuser %}
               <li><a href="{% url 'add_outfit' %}" class="nav-link">Add Outfit</a></li>
@@ -102,8 +102,8 @@
           <h4>Quick Links</h4>
           <ul>
             <li><a href="{% url 'outfit_list' %}">Home</a></li>
-            <li><a href="#">About Us</a></li>
-            <li><a href="#">Contact</a></li>
+            <li><a href="{% url 'about' %}">About Us</a></li>
+            <li><a href="{% url 'contact' %}">Contact</a></li>
           </ul>
         </div>
         

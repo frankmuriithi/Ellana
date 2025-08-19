@@ -1,6 +1,6 @@
 from django.urls import path
 from . import views
-from .views import CategoryListView, CategoryDetailView, add_to_cart, toggle_wishlist, add_to_compare
+from .views import CategoryListView, CategoryDetailView, add_to_cart, toggle_wishlist, add_to_compare, ReviewCreateView, OutfitReviewsView
 
 
 urlpatterns = [
@@ -34,16 +34,25 @@ urlpatterns = [
     path('compare/', views.Compare_page, name='compare'),
     path('wishlist/', views.Wishlist_page, name='wishlist'),
 
-
     # Reviews
-    path('review/new/', views.ReviewCreateView.as_view(), name='create_review'),
-
+    path('outfit/<int:outfit_id>/reviews/', views.OutfitReviewsView.as_view(), 
+         name='outfit_reviews'),
+    path('outfit/<int:outfit_id>/review/create/', views.ReviewCreateView.as_view(), 
+         name='create_review'),
+         
+         
     # Notifications
     path('notifications/', views.NotificationListView.as_view(), name='notifications'),
 
     # Messages
     path('messages/new/', views.MessageCreateView.as_view(), name='send_message'),
     path('messages/inbox/', views.InboxView.as_view(), name='inbox'),
+
+     # About Us
+     path('about/', views.about_view, name='about'),
+
+     # Contact Us
+     path('contact/', views.contact_view, name='contact'),
 ]
 
 

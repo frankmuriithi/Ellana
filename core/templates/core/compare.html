@@ -53,6 +53,11 @@
                     <td>{{ item.outfit.material|default:"-" }}</td>
                     {% endfor %}
                 </tr>
+                <tr>
+                    <td>Size</td>
+                    {% for item in compare_items %}
+                    <td>{{ item.outfit.size|default:"-" }}</td>
+                    {% endfor %}
             </tbody>
         </table>
     </div>

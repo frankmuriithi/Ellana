@@ -1,10 +1,150 @@
 {% extends 'core/base.html' %}
-{% block title %}Leave a Review{% endblock %}
+{% load static %}
+
 {% block content %}
-<h1>Write a Review</h1>
-<form method="post">
-  {% csrf_token %}
-  {{ form.as_p }}
-  <button type="submit">Submit</button>
-</form>
+<style>
+  /* Review Form */
+.review-form-container {
+  display: flex;
+  justify-content: center;
+  padding: 3rem 0;
+}
+
+.review-form-card {
+  background: white;
+  border-radius: 12px;
+  padding: 2.5rem;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+  max-width: 600px;
+  width: 100%;
+}
+
+.review-form-title {
+  font-size: 2rem;
+  margin-bottom: 2rem;
+  text-align: center;
+  color: var(--dark);
+}
+
+.outfit-preview {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+  padding-bottom: 2rem;
+  border-bottom: 1px solid var(--light-gray);
+}
+
+.outfit-thumbnail {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.rating-selector {
+  margin-bottom: 2rem;
+}
+
+.rating-selector label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+}
+
+.stars input[type="radio"] {
+  display: none;
+}
+
+.stars label {
+  font-size: 2rem;
+  color: #ddd;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.stars input[type="radio"]:checked ~ label {
+  color: #ddd;
+}
+
+.stars label:hover,
+.stars label:hover ~ label,
+.stars input[type="radio"]:checked ~ label:hover,
+.stars input[type="radio"]:checked ~ label:hover ~ label {
+  color: var(--accent);
+}
+
+.form-group {
+  margin-bottom: 2rem;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+}
+
+.form-group textarea {
+  width: 100%;
+  padding: 1rem;
+  border: 1px solid var(--light-gray);
+  border-radius: 8px;
+  font-family: inherit;
+  resize: vertical;
+  min-height: 150px;
+}
+
+.submit-review-btn {
+  width: 100%;
+  padding: 1rem;
+  background: var(--primary);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.submit-review-btn:hover {
+  background: var(--primary-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(255, 107, 107, 0.3);
+}
+</style>
+<div class="review-form-container">
+  <div class="review-form-card">
+    <h2 class="review-form-title">Write a Review</h2>
+    <div class="outfit-preview">
+      {% if outfit.images.first %}
+      <img src="{{ outfit.images.first.image.url }}" alt="{{ outfit.name }}" class="outfit-thumbnail">
+      {% endif %}
+      <h3>{{ outfit.name }}</h3>
+    </div>
+    
+    <form method="post" class="review-form">
+      {% csrf_token %}
+      
+      <div class="rating-selector">
+        <label>Your Rating:</label>
+        <div class="stars">
+          {% for i in "54321" %}
+          <input type="radio" id="star{{ i }}" name="rating" value="{{ i }}" 
+                 {% if form.rating.value == i %}checked{% endif %}>
+          <label for="star{{ i }}">★</label>
+          {% endfor %}
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <label for="id_comment">Your Review:</label>
+        <textarea name="comment" id="id_comment" rows="5" 
+                  placeholder="Share your experience with this outfit..."></textarea>
+      </div>
+      
+      <button type="submit" class="submit-review-btn">Submit Review</button>
+    </form>
+  </div>
+</div>
 {% endblock %}
