@@ -33,6 +33,9 @@ urlpatterns = [
     path('add-to-compare/', views.add_to_compare, name='add_to_compare'),
     path('compare/', views.Compare_page, name='compare'),
     path('wishlist/', views.Wishlist_page, name='wishlist'),
+    path("compare/add/<int:outfit_id>/", views.add_to_compare, name="add_to_compare"),
+
+
 
     # Reviews
     path('outfit/<int:outfit_id>/reviews/', views.OutfitReviewsView.as_view(), 
@@ -53,6 +56,7 @@ urlpatterns = [
 
      # Contact Us
      path('contact/', views.contact_view, name='contact'),
+
 ]
 
 

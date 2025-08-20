@@ -1,11 +1,170 @@
 {% extends 'core/base.html' %}
 {% block title %}{{ outfit.name }}{% endblock %}
 {% block content %}
-<h1>{{ outfit.name }}</h1>
-<p>{{ outfit.description }}</p>
-<p>Price: {{ outfit.price }}</p>
-<form method="post" action="{% url 'add_to_cart' outfit.pk %}">
-  {% csrf_token %}
-  <button type="submit">Add to cart</button>
-</form>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        body {
+            background-color: #fafafa;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .outfit-header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .outfit-header h1 {
+            font-size: 2.5rem;
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+        
+        .outfit-content {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+        
+        .outfit-image {
+            flex: 1;
+            min-width: 300px;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            background: linear-gradient(45deg, #ff9a9e, #fad0c4);
+            height: 400px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+        }
+        
+        .outfit-details {
+            flex: 1;
+            min-width: 300px;
+        }
+        
+        .price-tag {
+            font-size: 1.8rem;
+            color: #e74c3c;
+            margin: 20px 0;
+            font-weight: 700;
+        }
+        
+        .description {
+            color: #7f8c8d;
+            margin-bottom: 30px;
+            line-height: 1.8;
+            font-size: 1.1rem;
+        }
+        
+        .add-to-cart-form {
+            margin-top: 30px;
+        }
+        
+        .add-to-cart-btn {
+            background-color: #e84393;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 30px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 4px 10px rgba(232, 67, 147, 0.3);
+        }
+        
+        .add-to-cart-btn:hover {
+            background-color: #fd79a8;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(232, 67, 147, 0.4);
+        }
+        
+        .features {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin: 25px 0;
+        }
+        
+        .feature {
+            background-color: #f8f9fa;
+            padding: 10px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        @media (max-width: 768px) {
+            .outfit-content {
+                flex-direction: column;
+            }
+            
+            .outfit-header h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+
+    <div class="container">
+        <div class="outfit-header">
+            <h1>{{ outfit.name }}</h1>
+        </div>
+        
+        <div class="outfit-content">
+            <div class="outfit-image">
+                <i class="fas fa-tshirt"></i>
+            </div>
+            
+            <div class="outfit-details">
+                <div class="price-tag">${{ outfit.price }}</div>
+                
+                <p class="description">{{ outfit.description }}</p>
+                
+                <div class="features">
+                    <div class="feature">
+                        <i class="fas fa-shipping-fast"></i> Free Shipping
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-exchange-alt"></i> 30-Day Returns
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-tshirt"></i> Premium Quality
+                    </div>
+                </div>
+                
+                <form method="post" action="{% url 'add_to_cart' outfit.pk %}" class="add-to-cart-form">
+                    {% csrf_token %}
+                    <button type="submit" class="add-to-cart-btn">
+                        <i class="fas fa-shopping-bag"></i> Add to Cart
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+    
 {% endblock %}

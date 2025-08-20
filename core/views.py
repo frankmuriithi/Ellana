@@ -12,6 +12,7 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.db.models import Count, Avg
 from django.views.decorators.http import require_POST
 from django.http import JsonResponse
+from django.db import models
 
 
 
@@ -202,27 +203,45 @@ class CategoryDetailView(DetailView):
         context['sort'] = sort
         return context
     
-# -------------------------
+
 # CART & ORDER
-# -------------------------
+@login_required
 def view_cart(request):
-    cart = request.session.get('cart', {})
-    items = []
-    total = 0
-    for outfit_id, quantity in cart.items():
-        outfit = get_object_or_404(Outfit, id=outfit_id)
-        subtotal = outfit.price * quantity
-        items.append({'outfit': outfit, 'quantity': quantity, 'subtotal': subtotal})
-        total += subtotal
-    return render(request, 'core/cart.html', {'items': items, 'total': total})
+    cart_items = Cart.objects.filter(user=request.user)  # Fetch items for logged-in user
+    total = sum(item.total_price for item in cart_items)
+
+    return render(request, 'core/cart.html', {
+        'items': cart_items,
+        'total': total
+    })
 
 
 @require_POST
 @login_required
-def add_to_cart(request):
-    outfit_id = request.POST.get('outfit_id')
-    quantity = int(request.POST.get('quantity', 1))
-    
+def add_to_cart(request, outfit_id=None):
+    """
+    Universal Add to Cart view:
+    - Supports outfit_id from URL or POST data
+    - Works for all 'Add to Cart' buttons in the project
+    """
+    # Get outfit_id (from URL param OR POST body)
+    if outfit_id is None:
+        outfit_id = request.POST.get('outfit_id')
+
+    # Ensure we have a valid id
+    if not outfit_id:
+        return JsonResponse({'success': False, 'message': 'No outfit ID provided'}, status=400)
+
+    # Get quantity, default = 1
+    try:
+        quantity = int(request.POST.get('quantity', 1))
+    except ValueError:
+        return JsonResponse({'success': False, 'message': 'Invalid quantity'}, status=400)
+
+    if quantity < 1:
+        return JsonResponse({'success': False, 'message': 'Quantity must be at least 1'}, status=400)
+
+    # Try fetching outfit and updating cart
     try:
         outfit = Outfit.objects.get(id=outfit_id)
         cart_item, created = Cart.objects.get_or_create(
@@ -230,19 +249,21 @@ def add_to_cart(request):
             outfit=outfit,
             defaults={'quantity': quantity}
         )
-        
+
         if not created:
             cart_item.quantity += quantity
             cart_item.save()
-            
-        cart_count = Cart.objects.filter(user=request.user).count()
-        return JsonResponse({
-            'success': True,
-            'cart_count': cart_count,
-            'message': 'Added to cart successfully!',
-        })
+
+        # total cart items (sum of quantities)
+        cart_count = Cart.objects.filter(user=request.user).aggregate(
+            total=models.Sum('quantity')
+        )['total'] or 0
+
+        return redirect('view_cart')
+
     except Outfit.DoesNotExist:
         return JsonResponse({'success': False, 'message': 'Outfit not found'}, status=404)
+
 
 @require_POST
 @login_required
@@ -274,33 +295,38 @@ def toggle_wishlist(request):
 @login_required
 def add_to_compare(request):
     outfit_id = request.POST.get('outfit_id')
-    max_compare_items = 4  # Set your limit
-    
+    max_compare_items = 4
+
     try:
         outfit = Outfit.objects.get(id=outfit_id)
-        compare_count = Compare.objects.filter(user=request.user).count()
-        
-        if Compare.objects.filter(user=request.user, outfit=outfit).exists():
-            Compare.objects.filter(user=request.user, outfit=outfit).delete()
+        compare_qs = Compare.objects.filter(user=request.user)
+        compare_count = compare_qs.count()
+
+        if compare_qs.filter(outfit=outfit).exists():
+            compare_qs.filter(outfit=outfit).delete()
             return JsonResponse({
                 'success': True,
-                'message': 'Removed from compare'
+                'message': 'Removed from compare',
+                'compare_count': compare_count - 1
             })
-            
+
         if compare_count >= max_compare_items:
             return JsonResponse({
                 'success': False,
-                'message': f'You can compare maximum {max_compare_items} items'
+                'message': f'You can compare maximum {max_compare_items} items',
+                'compare_count': compare_count
             })
-            
+
         Compare.objects.create(user=request.user, outfit=outfit)
         return JsonResponse({
             'success': True,
-            'message': 'Added to compare'
+            'message': 'Added to compare',
+            'compare_count': compare_count + 1
         })
     except Outfit.DoesNotExist:
         return JsonResponse({'success': False, 'message': 'Outfit not found'}, status=404)
-    
+
+
 def Compare_page(request):
     items = Compare.objects.filter(user=request.user)
     return render(request, 'core/compare.html', {'compare_items': items})
@@ -458,3 +484,4 @@ def contact_view(request):
     else:
         form = MessageForm()
     return render(request, 'core/contact.html', {'form': form})    
+

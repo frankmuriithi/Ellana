@@ -23,7 +23,10 @@
                     <h3 class="item-name">{{ item.outfit.name }}</h3>
                     <p class="item-price">${{ item.outfit.price }}</p>
                     <div class="item-actions">
-                        <button class="btn add-to-cart" data-outfit-id="{{ item.outfit.id }}">Add to Cart</button>
+                        <form method="post" action="{% url 'add_to_cart' item.outfit.id %}">
+                            {% csrf_token %}
+                            <button class="btn add-to-cart" data-outfit-id="{{ item.outfit.id }}">Add to Cart</button>
+                        </form>
                         <button class="btn compare-btn" data-outfit-id="{{ item.outfit.id }}">Compare</button>
                     </div>
                 </div>
@@ -40,4 +43,26 @@
         {% endif %}
     </div>
 </div>
+
+<script>
+    // Add to Compare
+    document.querySelectorAll(".compare-btn").forEach(button => {
+        button.addEventListener("click", function () {
+            let outfitId = this.dataset.outfitId;
+
+            fetch("{% url 'add_to_compare' %}", {
+                method: "POST",
+                headers: {
+                    "X-CSRFToken": "{{ csrf_token }}",
+                    "Content-Type": "application/x-www-form-urlencoded"
+                },
+                body: `outfit_id=${outfitId}`
+            })
+            .then(res => res.json())
+            .then(data => alert(data.message));
+        });
+    });
+
+</script>
+
 {% endblock %}

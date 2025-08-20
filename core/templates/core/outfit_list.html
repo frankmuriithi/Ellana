@@ -397,9 +397,12 @@
           </div>
         </a>
         <div class="outfit-actions">
-          <button class="add-to-cart-btn"  data-outfit-id="{{ outfit.id }}" >
-            <i class="fas fa-shopping-bag"></i> Add to Cart
+          <form method="post" action="{% url 'add_to_cart' outfit.id %}">
+            {% csrf_token %}
+            <button class="add-to-cart-btn"  data-outfit-id="{{ outfit.id }}" >
+              <i class="fas fa-shopping-bag"></i> Add to Cart
           </button>
+          </form>
           <button class="wishlist-btn" data-outfit-id="{{ outfit.id }}">
             <i class="far fa-heart"></i>
           </button>
@@ -461,7 +464,7 @@
       <!-- Review Card 1 -->
       <div class="review-card">
         <div class="reviewer-info">
-          <img src="hero1.jpg" alt="User" class="reviewer-avatar">
+          <img src="{% static 'images/hero2.jpg' %}" alt="User" class="reviewer-avatar">
           <div>
             <h4>Alex Johnson</h4>
             <div class="rating-stars">★★★★★</div>
@@ -474,7 +477,7 @@
       <!-- Review Card 2 -->
       <div class="review-card">
         <div class="reviewer-info">
-          <img src="hero2.jpg" alt="User" class="reviewer-avatar">
+          <img src="{% static 'images/hero2.jpg' %}" alt="User" class="reviewer-avatar">
           <div>
             <h4>Sarah Miller</h4>
             <div class="rating-stars">★★★★☆</div>
@@ -487,7 +490,7 @@
       <!-- Review Card 3 -->
       <div class="review-card">
         <div class="reviewer-info">
-          <img src="hero3.jpg" alt="User" class="reviewer-avatar">
+          <img src="{% static 'images/hero2.jpg' %}" alt="User" class="reviewer-avatar">
           <div>
             <h4>Michael Chen</h4>
             <div class="rating-stars">★★★★★</div>
@@ -914,5 +917,7 @@ function updateCartCount(count) {
     el.textContent = count;
   });
 }
+
+
 </script>
 {% endblock %}
