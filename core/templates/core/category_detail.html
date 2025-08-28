@@ -32,8 +32,8 @@
       <div class="outfit-card">
         <a href="{% url 'outfit_detail' outfit.id %}">
           <div class="outfit-image-container">
-            {% if outfit.images.first %}
-            <img src="{{ outfit.images.first.image.url }}" alt="{{ outfit.name }}" class="outfit-image">
+            {% if outfit.image %}
+            <img src="{{ outfit.image.url }}" alt="{{ outfit.name }}" class="outfit-image">
             {% else %}
             <div class="outfit-placeholder">
               <i class="fas fa-tshirt"></i>

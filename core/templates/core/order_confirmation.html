@@ -1,0 +1,11 @@
+{% extends "core/base.html" %}
+{% block content %}
+  <div class="confirmation-container">
+    <h2>Order Confirmation</h2>
+    <p>Thank you for your purchase, {{ order.customer.user.username }}!</p>
+    <p><strong>Order ID:</strong> {{ order.id }}</p>
+    <p><strong>Status:</strong> {{ order.status }}</p>
+    <p><strong>Total Amount:</strong> Ksh {{ order.total_amount }}</p>
+    <p><strong>Payment Method:</strong> {{ order.payment_method }}</p>
+  </div>
+{% endblock %}

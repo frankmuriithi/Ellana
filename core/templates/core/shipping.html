@@ -1,0 +1,741 @@
+{% extends 'core/base.html' %}
+{% load static %}
+{% block title %}Shipping Policy{% endblock %}
+
+
+
+{% block content %}
+
+<style>
+    
+:root {
+        --shipping-primary: #8A2BE2;
+        --shipping-secondary: #5D3FD3;
+        --shipping-accent: #FF44CC;
+        --shipping-dark: #1A1A2E;
+        --shipping-light: #F8F9FF;
+        --shipping-card: #FFFFFF;
+        --shipping-border: #E0E0FF;
+        --shipping-success: #00CC99;
+        --shipping-warning: #FF9900;
+        --shipping-shadow: 0 10px 30px rgba(93, 63, 211, 0.15);
+    }
+
+    .shipping-hero {
+        background: linear-gradient(135deg, var(--shipping-primary) 0%, var(--shipping-secondary) 100%);
+        padding: 5rem 2rem;
+        text-align: center;
+        color: white;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .shipping-hero::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 320'%3E%3Cpath fill='%23ffffff' fill-opacity='0.1' d='M0,160L48,176C96,192,192,224,288,218.7C384,213,480,171,576,165.3C672,160,768,192,864,192C960,192,1056,160,1152,144C1248,128,1344,128,1392,128L1440,128L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z'%3E%3C/path%3E%3C/svg%3E");
+        background-size: cover;
+        background-position: center;
+        opacity: 0.2;
+    }
+
+    .shipping-hero-content {
+        position: relative;
+        max-width: 800px;
+        margin: 0 auto;
+    }
+
+    .shipping-hero h1 {
+        font-size: 3.5rem;
+        font-weight: 800;
+        margin-bottom: 1rem;
+        letter-spacing: -0.5px;
+    }
+
+    .shipping-hero p {
+        font-size: 1.2rem;
+        opacity: 0.9;
+        margin-bottom: 2rem;
+    }
+
+    .shipping-container {
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 4rem 2rem;
+    }
+
+    .shipping-toc {
+        background: var(--shipping-light);
+        border-radius: 16px;
+        padding: 2rem;
+        margin-bottom: 3rem;
+        box-shadow: var(--shipping-shadow);
+        position: sticky;
+        top: 2rem;
+        z-index: 10;
+    }
+
+    .shipping-toc h2 {
+        margin-bottom: 1.5rem;
+        color: var(--shipping-dark);
+        display: flex;
+        align-items: center;
+    }
+
+    .shipping-toc h2 i {
+        margin-right: 0.5rem;
+        color: var(--shipping-primary);
+    }
+
+    .shipping-toc-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.8rem;
+    }
+
+    .shipping-toc-item {
+        padding: 0.7rem 1.2rem;
+        background: white;
+        border-radius: 50px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        border: 2px solid transparent;
+        font-size: 0.9rem;
+    }
+
+    .shipping-toc-item:hover {
+        background: linear-gradient(135deg, var(--shipping-primary) 0%, var(--shipping-secondary) 100%);
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: var(--shipping-shadow);
+    }
+
+    .shipping-toc-item.active {
+        background: linear-gradient(135deg, var(--shipping-primary) 0%, var(--shipping-secondary) 100%);
+        color: white;
+        border-color: transparent;
+    }
+
+    .shipping-content {
+        display: flex;
+        flex-direction: column;
+        gap: 3rem;
+    }
+
+    .shipping-section {
+        background: white;
+        border-radius: 16px;
+        padding: 2.5rem;
+        box-shadow: var(--shipping-shadow);
+        transition: all 0.3s ease;
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    .shipping-section.visible {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    .shipping-section:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 35px rgba(93, 63, 211, 0.2);
+    }
+
+    .shipping-section-header {
+        display: flex;
+        align-items: center;
+        margin-bottom: 1.5rem;
+    }
+
+    .shipping-section-icon {
+        width: 50px;
+        height: 50px;
+        background: linear-gradient(135deg, var(--shipping-primary) 0%, var(--shipping-secondary) 100%);
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 1rem;
+        color: white;
+        font-size: 1.5rem;
+    }
+
+    .shipping-section h2 {
+        color: var(--shipping-dark);
+        margin: 0;
+    }
+
+    .shipping-section-content {
+        color: #555;
+        line-height: 1.7;
+    }
+
+    .shipping-info-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1.5rem;
+        margin-top: 1.5rem;
+    }
+
+    .shipping-info-card {
+        background: var(--shipping-light);
+        border-radius: 12px;
+        padding: 1.5rem;
+        transition: all 0.3s ease;
+    }
+
+    .shipping-info-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .shipping-info-card h3 {
+        color: var(--shipping-primary);
+        margin-bottom: 0.8rem;
+        display: flex;
+        align-items: center;
+    }
+
+    .shipping-info-card h3 i {
+        margin-right: 0.5rem;
+    }
+
+    .shipping-timeline {
+        position: relative;
+        padding-left: 2rem;
+        margin: 2rem 0;
+    }
+
+    .shipping-timeline::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        width: 3px;
+        background: linear-gradient(to bottom, var(--shipping-primary), var(--shipping-accent));
+        border-radius: 3px;
+    }
+
+    .shipping-timeline-item {
+        position: relative;
+        margin-bottom: 2rem;
+        padding-left: 1.5rem;
+    }
+
+    .shipping-timeline-item:last-child {
+        margin-bottom: 0;
+    }
+
+    .shipping-timeline-item::before {
+        content: '';
+        position: absolute;
+        left: -2.4rem;
+        top: 0.3rem;
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        background: var(--shipping-primary);
+        border: 3px solid white;
+        box-shadow: 0 0 0 3px var(--shipping-primary);
+    }
+
+    .shipping-timeline-date {
+        font-weight: 600;
+        color: var(--shipping-primary);
+        margin-bottom: 0.3rem;
+    }
+
+    .shipping-timeline-content {
+        color: #555;
+    }
+
+    .shipping-notice {
+        background: linear-gradient(135deg, #FFFBEB 0%, #FFF5D6 100%);
+        border-left: 4px solid var(--shipping-warning);
+        padding: 1.5rem;
+        border-radius: 8px;
+        margin: 1.5rem 0;
+        display: flex;
+        align-items: flex-start;
+    }
+
+    .shipping-notice i {
+        color: var(--shipping-warning);
+        font-size: 1.2rem;
+        margin-right: 1rem;
+        margin-top: 0.2rem;
+    }
+
+    .shipping-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 1.5rem 0;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    }
+
+    .shipping-table th {
+        background: linear-gradient(135deg, var(--shipping-primary) 0%, var(--shipping-secondary) 100%);
+        color: white;
+        padding: 1rem;
+        text-align: left;
+    }
+
+    .shipping-table td {
+        padding: 1rem;
+        border-bottom: 1px solid var(--shipping-border);
+    }
+
+    .shipping-table tr:last-child td {
+        border-bottom: none;
+    }
+
+    .shipping-table tr:nth-child(even) {
+        background-color: var(--shipping-light);
+    }
+
+    .shipping-contact {
+        background: linear-gradient(135deg, var(--shipping-light) 0%, #FFFFFF 100%);
+        border-radius: 20px;
+        padding: 3rem;
+        text-align: center;
+        margin-top: 3rem;
+        box-shadow: var(--shipping-shadow);
+    }
+
+    .shipping-contact h2 {
+        color: var(--shipping-dark);
+        margin-bottom: 1rem;
+    }
+
+    .shipping-contact p {
+        color: #666;
+        margin-bottom: 2rem;
+        max-width: 600px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .shipping-contact-btn {
+        display: inline-block;
+        padding: 1rem 2rem;
+        background: linear-gradient(135deg, var(--shipping-primary) 0%, var(--shipping-secondary) 100%);
+        color: white;
+        border: none;
+        border-radius: 50px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 5px 15px rgba(138, 43, 226, 0.3);
+        text-decoration: none;
+    }
+
+    .shipping-contact-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(138, 43, 226, 0.4);
+    }
+
+    /* Animation for sections */
+    @keyframes shippingFadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* Responsive design */
+    @media (max-width: 768px) {
+        .shipping-hero h1 {
+            font-size: 2.5rem;
+        }
+        
+        .shipping-hero {
+            padding: 3rem 1.5rem;
+        }
+        
+        .shipping-container {
+            padding: 3rem 1.5rem;
+        }
+        
+        .shipping-toc-list {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        
+        .shipping-section {
+            padding: 1.8rem;
+        }
+        
+        .shipping-info-grid {
+            grid-template-columns: 1fr;
+        }
+        
+        .shipping-contact {
+            padding: 2rem;
+        }
+    }
+
+    /* Animation delays for sections */
+    .shipping-section:nth-child(1) { animation-delay: 0.1s; }
+    .shipping-section:nth-child(2) { animation-delay: 0.2s; }
+    .shipping-section:nth-child(3) { animation-delay: 0.3s; }
+    .shipping-section:nth-child(4) { animation-delay: 0.4s; }
+    .shipping-section:nth-child(5) { animation-delay: 0.5s; }
+    .shipping-section:nth-child(6) { animation-delay: 0.6s; }
+
+
+</style>
+<section class="shipping-hero">
+    <div class="shipping-hero-content">
+        <h1>Shipping Policy</h1>
+        <p>Learn about our shipping methods, delivery times, and international shipping options</p>
+    </div>
+</section>
+
+<div class="shipping-container">
+    <div class="shipping-toc">
+        <h2><i class="fas fa-list"></i> On This Page</h2>
+        <div class="shipping-toc-list">
+            <div class="shipping-toc-item active" data-section="processing">Processing Time</div>
+            <div class="shipping-toc-item" data-section="domestic">Domestic Shipping</div>
+            <div class="shipping-toc-item" data-section="international">International Shipping</div>
+            <div class="shipping-toc-item" data-section="tracking">Order Tracking</div>
+            <div class="shipping-toc-item" data-section="issues">Shipping Issues</div>
+            <div class="shipping-toc-item" data-section="returns">Returns & Exchanges</div>
+        </div>
+    </div>
+
+    <div class="shipping-content">
+        <!-- Processing Time Section -->
+        <section id="processing" class="shipping-section">
+            <div class="shipping-section-header">
+                <div class="shipping-section-icon">
+                    <i class="fas fa-clock"></i>
+                </div>
+                <h2>Order Processing Time</h2>
+            </div>
+            <div class="shipping-section-content">
+                <p>All orders are processed within 1-2 business days (excluding weekends and holidays) after receiving your order confirmation email. You will receive another notification when your order has shipped.</p>
+                
+                <div class="shipping-timeline">
+                    <div class="shipping-timeline-item">
+                        <div class="shipping-timeline-date">Day 1</div>
+                        <div class="shipping-timeline-content">Order received and payment verified</div>
+                    </div>
+                    <div class="shipping-timeline-item">
+                        <div class="shipping-timeline-date">Day 1-2</div>
+                        <div class="shipping-timeline-content">Order processing and packaging</div>
+                    </div>
+                    <div class="shipping-timeline-item">
+                        <div class="shipping-timeline-date">Day 2-3</div>
+                        <div class="shipping-timeline-content">Order handed to shipping carrier</div>
+                    </div>
+                </div>
+
+                <div class="shipping-notice">
+                    <i class="fas fa-exclamation-circle"></i>
+                    <div>
+                        <strong>Please note:</strong> During peak seasons and holiday periods, processing times may be longer than usual. We appreciate your patience during these busy times.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Domestic Shipping Section -->
+        <section id="domestic" class="shipping-section">
+            <div class="shipping-section-header">
+                <div class="shipping-section-icon">
+                    <i class="fas fa-truck"></i>
+                </div>
+                <h2>Domestic Shipping</h2>
+            </div>
+            <div class="shipping-section-content">
+                <p>We offer several shipping options for domestic orders. The following table outlines our available shipping methods, delivery times, and costs:</p>
+                
+                <table class="shipping-table">
+                    <thead>
+                        <tr>
+                            <th>Shipping Method</th>
+                            <th>Delivery Time</th>
+                            <th>Cost</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Standard Shipping</td>
+                            <td>3-5 business days</td>
+                            <td>$4.99</td>
+                        </tr>
+                        <tr>
+                            <td>Expedited Shipping</td>
+                            <td>2-3 business days</td>
+                            <td>$9.99</td>
+                        </tr>
+                        <tr>
+                            <td>Express Shipping</td>
+                            <td>1-2 business days</td>
+                            <td>$14.99</td>
+                        </tr>
+                        <tr>
+                            <td>Free Shipping</td>
+                            <td>5-7 business days</td>
+                            <td>Free on orders over $50</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="shipping-info-grid">
+                    <div class="shipping-info-card">
+                        <h3><i class="fas fa-box"></i> Packaging</h3>
+                        <p>All items are carefully packaged in protective materials to ensure they arrive in perfect condition.</p>
+                    </div>
+                    <div class="shipping-info-card">
+                        <h3><i class="fas fa-home"></i> Delivery</h3>
+                        <p>Packages are delivered to your doorstep during regular business hours.</p>
+                    </div>
+                    <div class="shipping-info-card">
+                        <h3><i class="fas fa-calendar"></i> Business Days</h3>
+                        <p>Delivery estimates are based on business days (Monday-Friday, excluding holidays).</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- International Shipping Section -->
+        <section id="international" class="shipping-section">
+            <div class="shipping-section-header">
+                <div class="shipping-section-icon">
+                    <i class="fas fa-globe"></i>
+                </div>
+                <h2>International Shipping</h2>
+            </div>
+            <div class="shipping-section-content">
+                <p>We ship to over 50 countries worldwide. International shipping times and costs vary depending on the destination.</p>
+                
+                <div class="shipping-info-grid">
+                    <div class="shipping-info-card">
+                        <h3><i class="fas fa-plane"></i> Delivery Times</h3>
+                        <p>International orders typically arrive within 7-14 business days after shipping.</p>
+                    </div>
+                    <div class="shipping-info-card">
+                        <h3><i class="fas fa-receipt"></i> Customs & Duties</h3>
+                        <p>Customers are responsible for any customs duties, taxes, or fees imposed by their country.</p>
+                    </div>
+                    <div class="shipping-info-card">
+                        <h3><i class="fas fa-file-invoice"></i> Documentation</h3>
+                        <p>All international shipments include proper documentation for customs clearance.</p>
+                    </div>
+                </div>
+
+                <div class="shipping-notice">
+                    <i class="fas fa-info-circle"></i>
+                    <div>
+                        <strong>Important:</strong> International delivery times are estimates and not guaranteed. Delays may occur due to customs processing, weather conditions, or other factors beyond our control.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Order Tracking Section -->
+        <section id="tracking" class="shipping-section">
+            <div class="shipping-section-header">
+                <div class="shipping-section-icon">
+                    <i class="fas fa-map-marked-alt"></i>
+                </div>
+                <h2>Order Tracking</h2>
+            </div>
+            <div class="shipping-section-content">
+                <p>Once your order has shipped, you will receive a confirmation email with a tracking number and a link to track your package. You can also track your order by logging into your account.</p>
+                
+                <div class="shipping-info-grid">
+                    <div class="shipping-info-card">
+                        <h3><i class="fas fa-sms"></i> SMS Updates</h3>
+                        <p>Opt-in to receive text message updates about your delivery status.</p>
+                    </div>
+                    <div class="shipping-info-card">
+                        <h3><i class="fas fa-envelope"></i> Email Notifications</h3>
+                        <p>Receive email notifications at each major step of the delivery process.</p>
+                    </div>
+                    <div class="shipping-info-card">
+                        <h3><i class="fas fa-question-circle"></i> Need Help?</h3>
+                        <p>Contact our support team if you have any questions about your tracking information.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Shipping Issues Section -->
+        <section id="issues" class="shipping-section">
+            <div class="shipping-section-header">
+                <div class="shipping-section-icon">
+                    <i class="fas fa-exclamation-triangle"></i>
+                </div>
+                <h2>Shipping Issues</h2>
+            </div>
+            <div class="shipping-section-content">
+                <p>While we strive to ensure all orders arrive on time and in perfect condition, occasionally issues may arise. Here's what to do if you encounter problems with your delivery:</p>
+                
+                <div class="shipping-info-grid">
+                    <div class="shipping-info-card">
+                        <h3><i class="fas fa-box-open"></i> Damaged Package</h3>
+                        <p>Contact us within 48 hours of delivery with photos of the damaged package and contents.</p>
+                    </div>
+                    <div class="shipping-info-card">
+                        <h3><i class="fas fa-search"></i> Lost Package</h3>
+                        <p>If your tracking hasn't updated in 5 business days, contact us for assistance.</p>
+                    </div>
+                    <div class="shipping-info-card">
+                        <h3><i class="fas fa-wrong-way"></i> Incorrect Address</h3>
+                        <p>Notify us immediately if you've entered the wrong shipping address.</p>
+                    </div>
+                </div>
+
+                <div class="shipping-notice">
+                    <i class="fas fa-hand-holding-heart"></i>
+                    <div>
+                        <strong>We're here to help:</strong> Our customer service team will work quickly to resolve any shipping issues you encounter. Contact us at support@yourstore.com or through our contact form.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Returns & Exchanges Section -->
+        <section id="returns" class="shipping-section">
+            <div class="shipping-section-header">
+                <div class="shipping-section-icon">
+                    <i class="fas fa-exchange-alt"></i>
+                </div>
+                <h2>Returns & Exchanges</h2>
+            </div>
+            <div class="shipping-section-content">
+                <p>We want you to be completely satisfied with your purchase. If you're not happy with your order, we accept returns and exchanges within 30 days of delivery.</p>
+                
+                <div class="shipping-info-grid">
+                    <div class="shipping-info-card">
+                        <h3><i class="fas fa-undo"></i> Return Process</h3>
+                        <p>Initiate a return through your account dashboard or by contacting our support team.</p>
+                    </div>
+                    <div class="shipping-info-card">
+                        <h3><i class="fas fa-shipping-fast"></i> Return Shipping</h3>
+                        <p>We provide a prepaid return label for all domestic returns.</p>
+                    </div>
+                    <div class="shipping-info-card">
+                        <h3><i class="fas fa-refresh"></i> Exchange Process</h3>
+                        <p>Exchanges are processed once we receive your returned item.</p>
+                    </div>
+                </div>
+
+                <div class="shipping-notice">
+                    <i class="fas fa-clock"></i>
+                    <div>
+                        <strong>Processing time:</strong> Please allow 3-5 business days for us to process your return or exchange once we receive your package.
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <div class="shipping-contact">
+        <h2>Still Have Questions?</h2>
+        <p>Can't find the information you're looking for? Our customer support team is here to help with any shipping-related questions.</p>
+        <a href="{% url 'contact' %}" class="shipping-contact-btn">Contact Support</a>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const sections = document.querySelectorAll('.shipping-section');
+        const tocItems = document.querySelectorAll('.shipping-toc-item');
+        
+        // Initialize animations
+        function initAnimations() {
+            // Intersection Observer for section animations
+            const observer = new IntersersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            }, { threshold: 0.1 });
+            
+            // Observe all sections
+            sections.forEach(section => {
+                observer.observe(section);
+            });
+            
+            // Table of contents navigation
+            tocItems.forEach(item => {
+                item.addEventListener('click', () => {
+                    // Update active TOC item
+                    tocItems.forEach(i => i.classList.remove('active'));
+                    item.classList.add('active');
+                    
+                    // Scroll to section
+                    const sectionId = item.getAttribute('data-section');
+                    const section = document.getElementById(sectionId);
+                    if (section) {
+                        window.scrollTo({
+                            top: section.offsetTop - 100,
+                            behavior: 'smooth'
+                        });
+                    }
+                });
+            });
+            
+            // Update active TOC item on scroll
+            window.addEventListener('scroll', () => {
+                let currentSection = '';
+                
+                sections.forEach(section => {
+                    const sectionTop = section.offsetTop;
+                    if (window.scrollY >= sectionTop - 150) {
+                        currentSection = section.getAttribute('id');
+                    }
+                });
+                
+                tocItems.forEach(item => {
+                    item.classList.remove('active');
+                    if (item.getAttribute('data-section') === currentSection) {
+                        item.classList.add('active');
+                    }
+                });
+            });
+        }
+        
+        // Initialize the animations and interactions
+        initAnimations();
+        
+        // Add CSS for animations
+        const style = document.createElement('style');
+        style.textContent = `
+            .shipping-section {
+                animation: shippingFadeIn 0.8s ease forwards;
+            }
+        `;
+        document.head.appendChild(style);
+    });
+
+    // Intersection Observer polyfill for older browsers
+    // Note: In a production environment, you might want to include a proper polyfill
+    if (!window.IntersersectionObserver) {
+        // Fallback for browsers without Intersection Observer support
+        document.querySelectorAll('.shipping-section').forEach(section => {
+            section.classList.add('visible');
+        });
+    }
+</script>
+{% endblock %}

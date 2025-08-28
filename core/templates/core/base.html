@@ -43,7 +43,7 @@
             
             {% if user.is_superuser %}
               <li><a href="{% url 'add_outfit' %}" class="nav-link">Add Outfit</a></li>
-              <li><a href="{% url 'order_history' %}" class="nav-link">Orders</a></li>
+              <li><a href="{% url 'checkout' %}" class="nav-link">Orders</a></li>
             {% endif %}
             
             <li>
@@ -110,17 +110,17 @@
         <div class="footer-col">
           <h4>Customer Care</h4>
           <ul>
-            <li><a href="#">FAQs</a></li>
-            <li><a href="#">Shipping Policy</a></li>
-            <li><a href="#">Returns</a></li>
+            <li><a href="{% url 'faqs' %}">FAQs</a></li>
+            <li><a href="{% url 'shipping' %}">Shipping Policy</a></li>
+            <li><a href="{% url 'returns' %}">Returns</a></li>
           </ul>
         </div>
         
         <div class="footer-col">
           <h4>Legal</h4>
           <ul>
-            <li><a href="#">Terms of Service</a></li>
-            <li><a href="#">Privacy Policy</a></li>
+            <li><a href="{% url 'terms' %}">Terms of Service</a></li>
+            <li><a href="{% url 'privacy' %}">Privacy Policy</a></li>
           </ul>
         </div>
       </div>

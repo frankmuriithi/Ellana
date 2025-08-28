@@ -18,7 +18,7 @@
                 <tr>
                     <th class="feature-column">Features</th>
                     {% for item in compare_items %}
-                    <th class="product-column">
+                    <th class="product-column" data-outfit-id="{{ item.outfit.id }}">
                         <div class="product-header">
                             <div class="product-image">
                                 <img src="{{ item.outfit.image.url }}" alt="{{ item.outfit.name }}">
@@ -27,10 +27,10 @@
                                 </button>
                             </div>
                             <h3 class="product-name">{{ item.outfit.name }}</h3>
-                            <p class="product-price">${{ item.outfit.price }}</p>
+                            <p class="product-price">Ksh{{ item.outfit.price }}</p>
                             <form method="post" action="{% url 'add_to_cart' item.outfit.id %}">
                                 {% csrf_token %}
-                            <button class="btn add-to-cart">Add to Cart</button>
+                                <button class="btn add-to-cart">Add to Cart</button>
                             </form>
                         </div>
                     </th>
@@ -41,26 +41,27 @@
                 <tr>
                     <td>Brand</td>
                     {% for item in compare_items %}
-                    <td>{{ item.outfit.brand|default:"-" }}</td>
+                    <td class="product-column" data-outfit-id="{{ item.outfit.id }}">{{ item.outfit.brand|default:"-" }}</td>
                     {% endfor %}
                 </tr>
                 <tr>
                     <td>Color</td>
                     {% for item in compare_items %}
-                    <td>{{ item.outfit.color }}</td>
+                    <td class="product-column" data-outfit-id="{{ item.outfit.id }}">{{ item.outfit.color }}</td>
                     {% endfor %}
                 </tr>
                 <tr>
                     <td>Material</td>
                     {% for item in compare_items %}
-                    <td>{{ item.outfit.material|default:"-" }}</td>
+                    <td class="product-column" data-outfit-id="{{ item.outfit.id }}">{{ item.outfit.material|default:"-" }}</td>
                     {% endfor %}
                 </tr>
                 <tr>
                     <td>Size</td>
                     {% for item in compare_items %}
-                    <td>{{ item.outfit.size|default:"-" }}</td>
+                    <td class="product-column" data-outfit-id="{{ item.outfit.id }}">{{ item.outfit.size|default:"-" }}</td>
                     {% endfor %}
+                </tr>
             </tbody>
         </table>
     </div>
@@ -73,4 +74,52 @@
     </div>
     {% endif %}
 </div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    document.querySelectorAll(".remove-compare").forEach(button => {
+        button.addEventListener("click", function(e) {
+            e.preventDefault();
+
+            let outfitId = this.getAttribute("data-outfit-id");
+
+            fetch("/remove-from-compare/", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded",
+                    "X-CSRFToken": getCookie("csrftoken")
+                },
+                body: "outfit_id=" + outfitId
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Remove ALL columns with this outfit-id (image, brand, color, etc.)
+                    document.querySelectorAll('[data-outfit-id="' + outfitId + '"]').forEach(col => {
+                        col.remove();
+                    });
+                }
+            })
+            .catch(error => console.error("Error:", error));
+        });
+    });
+});
+
+// Get CSRF token helper
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== "") {
+        const cookies = document.cookie.split(";");
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + "=")) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+</script>
+
 {% endblock %}

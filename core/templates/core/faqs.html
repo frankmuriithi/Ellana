@@ -1,0 +1,569 @@
+{% extends 'core/base.html' %}
+{% load static %}
+{% block title %}FAQs{% endblock %}
+
+
+
+{% block content %}
+
+<style>
+    
+ :root {
+        --faq-primary: #8A2BE2;
+        --faq-secondary: #5D3FD3;
+        --faq-accent: #FF44CC;
+        --faq-dark: #1A1A2E;
+        --faq-light: #F8F9FF;
+        --faq-card: #FFFFFF;
+        --faq-border: #E0E0FF;
+        --faq-shadow: 0 10px 30px rgba(93, 63, 211, 0.15);
+    }
+
+    .faq-hero {
+        background: linear-gradient(135deg, var(--faq-primary) 0%, var(--faq-secondary) 100%);
+        padding: 5rem 2rem;
+        text-align: center;
+        color: white;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .faq-hero::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 320'%3E%3Cpath fill='%23ffffff' fill-opacity='0.1' d='M0,160L48,176C96,192,192,224,288,218.7C384,213,480,171,576,165.3C672,160,768,192,864,192C960,192,1056,160,1152,144C1248,128,1344,128,1392,128L1440,128L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z'%3E%3C/path%3E%3C/svg%3E");
+        background-size: cover;
+        background-position: center;
+        opacity: 0.2;
+    }
+
+    .faq-hero-content {
+        position: relative;
+        max-width: 800px;
+        margin: 0 auto;
+    }
+
+    .faq-hero h1 {
+        font-size: 3.5rem;
+        font-weight: 800;
+        margin-bottom: 1rem;
+        letter-spacing: -0.5px;
+    }
+
+    .faq-hero p {
+        font-size: 1.2rem;
+        opacity: 0.9;
+        margin-bottom: 2rem;
+    }
+
+    .faq-search {
+        position: relative;
+        max-width: 500px;
+        margin: 0 auto;
+    }
+
+    .faq-search-input {
+        width: 100%;
+        padding: 1.2rem 1.5rem;
+        padding-left: 3rem;
+        border: none;
+        border-radius: 50px;
+        font-size: 1rem;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+    }
+
+    .faq-search-input:focus {
+        outline: none;
+        box-shadow: 0 8px 25px rgba(138, 43, 226, 0.25);
+        transform: translateY(-2px);
+    }
+
+    .faq-search-icon {
+        position: absolute;
+        left: 1.2rem;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--faq-primary);
+    }
+
+    .faq-container {
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 4rem 2rem;
+    }
+
+    .faq-categories {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+        justify-content: center;
+        margin-bottom: 3rem;
+    }
+
+    .faq-category {
+        padding: 0.8rem 1.5rem;
+        background: white;
+        border: 2px solid var(--faq-border);
+        border-radius: 50px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .faq-category:hover, .faq-category.active {
+        background: linear-gradient(135deg, var(--faq-primary) 0%, var(--faq-secondary) 100%);
+        color: white;
+        border-color: transparent;
+        transform: translateY(-2px);
+        box-shadow: var(--faq-shadow);
+    }
+
+    .faq-list {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+
+    .faq-item {
+        background: var(--faq-card);
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: var(--faq-shadow);
+        transition: all 0.3s ease;
+    }
+
+    .faq-item:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 15px 35px rgba(93, 63, 211, 0.2);
+    }
+
+    .faq-question {
+        padding: 1.5rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        cursor: pointer;
+        font-weight: 700;
+        font-size: 1.1rem;
+        color: var(--faq-dark);
+    }
+
+    .faq-question span {
+        margin-right: 1.5rem;
+    }
+
+    .faq-icon {
+        color: var(--faq-primary);
+        transition: all 0.3s ease;
+        font-size: 1.2rem;
+        min-width: 24px;
+        text-align: center;
+    }
+
+    .faq-answer {
+        padding: 0 1.5rem;
+        max-height: 0;
+        overflow: hidden;
+        color: #555;
+        line-height: 1.6;
+        transition: all 0.4s ease;
+    }
+
+    .faq-item.active .faq-answer {
+        padding: 0 1.5rem 1.5rem;
+        max-height: 500px;
+    }
+
+    .faq-item.active .faq-icon {
+        transform: rotate(45deg);
+    }
+
+    .faq-contact {
+        background: linear-gradient(135deg, #F8F9FF 0%, #FFFFFF 100%);
+        border-radius: 20px;
+        padding: 3rem;
+        text-align: center;
+        margin-top: 5rem;
+        box-shadow: var(--faq-shadow);
+    }
+
+    .faq-contact h2 {
+        color: var(--faq-dark);
+        margin-bottom: 1rem;
+    }
+
+    .faq-contact p {
+        color: #666;
+        margin-bottom: 2rem;
+        max-width: 600px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .faq-contact-btn {
+        display: inline-block;
+        padding: 1rem 2rem;
+        background: linear-gradient(135deg, var(--faq-primary) 0%, var(--faq-secondary) 100%);
+        color: white;
+        border: none;
+        border-radius: 50px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 5px 15px rgba(138, 43, 226, 0.3);
+    }
+
+    .faq-contact-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(138, 43, 226, 0.4);
+    }
+
+    /* Animation for items */
+    @keyframes faqFadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .faq-item {
+        animation: faqFadeIn 0.5s ease-out;
+        animation-fill-mode: both;
+    }
+
+    .faq-item:nth-child(1) { animation-delay: 0.1s; }
+    .faq-item:nth-child(2) { animation-delay: 0.2s; }
+    .faq-item:nth-child(3) { animation-delay: 0.3s; }
+    .faq-item:nth-child(4) { animation-delay: 0.4s; }
+    .faq-item:nth-child(5) { animation-delay: 0.5s; }
+    .faq-item:nth-child(6) { animation-delay: 0.6s; }
+    .faq-item:nth-child(7) { animation-delay: 0.7s; }
+    .faq-item:nth-child(8) { animation-delay: 0.8s; }
+
+    /* Responsive design */
+    @media (max-width: 768px) {
+        .faq-hero h1 {
+            font-size: 2.5rem;
+        }
+        
+        .faq-hero {
+            padding: 3rem 1.5rem;
+        }
+        
+        .faq-container {
+            padding: 3rem 1.5rem;
+        }
+        
+        .faq-question {
+            padding: 1.2rem;
+        }
+        
+        .faq-contact {
+            padding: 2rem;
+        }
+    }
+
+    /* No results message */
+    .faq-no-results {
+        text-align: center;
+        padding: 3rem;
+        color: #666;
+        display: none;
+    }
+
+    .faq-no-results.show {
+        display: block;
+        animation: faqFadeIn 0.5s;
+    }
+    
+</style>
+<section class="faq-hero">
+    <div class="faq-hero-content">
+        <h1>Frequently Asked Questions</h1>
+        <p>Find answers to common questions about our products, services, and policies</p>
+        <div class="faq-search">
+            <i class="fas fa-search faq-search-icon"></i>
+            <input type="text" class="faq-search-input" placeholder="Search for questions..." id="faqSearch">
+        </div>
+    </div>
+</section>
+
+<div class="faq-container">
+    <div class="faq-categories">
+        <div class="faq-category active" data-category="all">All Questions</div>
+        <div class="faq-category" data-category="account">Account</div>
+        <div class="faq-category" data-category="orders">Orders</div>
+        <div class="faq-category" data-category="shipping">Shipping</div>
+        <div class="faq-category" data-category="returns">Returns</div>
+        <div class="faq-category" data-category="products">Products</div>
+    </div>
+
+    <div class="faq-list" id="faqList">
+        <!-- Account FAQs -->
+        <div class="faq-item" data-category="account">
+            <div class="faq-question">
+                <span>How do I create an account?</span>
+                <i class="fas fa-plus faq-icon"></i>
+            </div>
+            <div class="faq-answer">
+                <p>Creating an account is simple! Click on the "Sign Up" button at the top right corner of the page, fill in your details including your email address and a password, and you're all set. You can also sign up using your Google or Facebook account for faster registration.</p>
+            </div>
+        </div>
+
+        <div class="faq-item" data-category="account">
+            <div class="faq-question">
+                <span>I forgot my password. How can I reset it?</span>
+                <i class="fas fa-plus faq-icon"></i>
+            </div>
+            <div class="faq-answer">
+                <p>If you've forgotten your password, click on the "Forgot Password" link on the login page. Enter your email address, and we'll send you a link to reset your password. Make sure to check your spam folder if you don't see the email in your inbox.</p>
+            </div>
+        </div>
+
+        <!-- Orders FAQs -->
+        <div class="faq-item" data-category="orders">
+            <div class="faq-question">
+                <span>How can I track my order?</span>
+                <i class="fas fa-plus faq-icon"></i>
+            </div>
+            <div class="faq-answer">
+                <p>Once your order has been shipped, you'll receive a confirmation email with a tracking number and a link to track your package. You can also log into your account and view your order history to see the status of all your orders.</p>
+            </div>
+        </div>
+
+        <div class="faq-item" data-category="orders">
+            <div class="faq-question">
+                <span>Can I modify or cancel my order after placing it?</span>
+                <i class="fas fa-plus faq-icon"></i>
+            </div>
+            <div class="faq-answer">
+                <p>We process orders quickly to ensure fast delivery, so modifications or cancellations are only possible within 1 hour of placing your order. Please contact our customer service team immediately if you need to change or cancel your order.</p>
+            </div>
+        </div>
+
+        <!-- Shipping FAQs -->
+        <div class="faq-item" data-category="shipping">
+            <div class="faq-question">
+                <span>What shipping options do you offer?</span>
+                <i class="fas fa-plus faq-icon"></i>
+            </div>
+            <div class="faq-answer">
+                <p>We offer several shipping options including standard shipping (3-5 business days), expedited shipping (2-3 business days), and express shipping (1-2 business days). Shipping costs vary based on the option selected and your location.</p>
+            </div>
+        </div>
+
+        <div class="faq-item" data-category="shipping">
+            <div class="faq-question">
+                <span>Do you ship internationally?</span>
+                <i class="fas fa-plus faq-icon"></i>
+            </div>
+            <div class="faq-answer">
+                <p>Yes, we ship to over 50 countries worldwide. International shipping typically takes 7-14 business days depending on the destination. Please note that customers are responsible for any customs duties or import taxes that may apply.</p>
+            </div>
+        </div>
+
+        <!-- Returns FAQs -->
+        <div class="faq-item" data-category="returns">
+            <div class="faq-question">
+                <span>What is your return policy?</span>
+                <i class="fas fa-plus faq-icon"></i>
+            </div>
+            <div class="faq-answer">
+                <p>We offer a 30-day return policy for all unused items in their original packaging with tags attached. Simply initiate a return through your account dashboard, print the prepaid shipping label, and send the item back to us. Once received, we'll process your refund within 3-5 business days.</p>
+            </div>
+        </div>
+
+        <!-- Products FAQs -->
+        <div class="faq-item" data-category="products">
+            <div class="faq-question">
+                <span>How do I know what size to order?</span>
+                <i class="fas fa-plus faq-icon"></i>
+            </div>
+            <div class="faq-answer">
+                <p>We provide detailed size charts for each product to help you find the perfect fit. You can find these charts on the product page. If you're between sizes, we recommend sizing up. If you need further assistance, our customer service team can provide personalized sizing recommendations.</p>
+            </div>
+        </div>
+
+        <div class="faq-item" data-category="products">
+            <div class="faq-question">
+                <span>Are your products ethically sourced?</span>
+                <i class="fas fa-plus faq-icon"></i>
+            </div>
+            <div class="faq-answer">
+                <p>Yes, we are committed to ethical and sustainable practices. All our products are sourced from suppliers who adhere to fair labor practices, and we continuously work to reduce our environmental impact through sustainable materials and processes.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="faq-no-results" id="faqNoResults">
+        <i class="fas fa-search" style="font-size: 3rem; margin-bottom: 1rem; opacity: 0.5;"></i>
+        <h3>No results found</h3>
+        <p>Try different keywords or browse our categories</p>
+    </div>
+
+    <div class="faq-contact">
+        <h2>Still have questions?</h2>
+        <p>Can't find the answer you're looking for? Please reach out to our friendly customer support team.</p>
+        <a href="{% url 'contact' %}" class="faq-contact-btn">Contact Us</a>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const faqItems = document.querySelectorAll('.faq-item');
+        const faqCategories = document.querySelectorAll('.faq-category');
+        const searchInput = document.getElementById('faqSearch');
+        const noResults = document.getElementById('faqNoResults');
+        
+        // Initialize all FAQs
+        function initFAQs() {
+            // Add click event to each question
+            faqItems.forEach(item => {
+                const question = item.querySelector('.faq-question');
+                question.addEventListener('click', () => {
+                    // Close all other items
+                    if (!item.classList.contains('active')) {
+                        faqItems.forEach(otherItem => {
+                            otherItem.classList.remove('active');
+                        });
+                    }
+                    
+                    // Toggle current item
+                    item.classList.toggle('active');
+                });
+            });
+            
+            // Add event listeners to categories
+            faqCategories.forEach(category => {
+                category.addEventListener('click', () => {
+                    // Update active category
+                    faqCategories.forEach(c => c.classList.remove('active'));
+                    category.classList.add('active');
+                    
+                    // Filter FAQs
+                    const categoryName = category.getAttribute('data-category');
+                    filterFAQs(categoryName);
+                });
+            });
+            
+            // Add search functionality
+            searchInput.addEventListener('input', () => {
+                const searchTerm = searchInput.value.toLowerCase();
+                searchFAQs(searchTerm);
+            });
+        }
+        
+        // Filter FAQs by category
+        function filterFAQs(category) {
+            let visibleCount = 0;
+            
+            faqItems.forEach(item => {
+                const itemCategory = item.getAttribute('data-category');
+                
+                if (category === 'all' || category === itemCategory) {
+                    item.style.display = 'block';
+                    visibleCount++;
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+            
+            // Show no results message if needed
+            if (visibleCount === 0) {
+                noResults.classList.add('show');
+            } else {
+                noResults.classList.remove('show');
+            }
+        }
+        
+        // Search FAQs
+        function searchFAQs(term) {
+            if (term.length < 2) {
+                // Show all if search term is too short
+                faqItems.forEach(item => {
+                    item.style.display = 'block';
+                });
+                noResults.classList.remove('show');
+                return;
+            }
+            
+            let visibleCount = 0;
+            
+            faqItems.forEach(item => {
+                const question = item.querySelector('.faq-question span').textContent.toLowerCase();
+                const answer = item.querySelector('.faq-answer p').textContent.toLowerCase();
+                
+                if (question.includes(term) || answer.includes(term)) {
+                    item.style.display = 'block';
+                    visibleCount++;
+                    
+                    // Highlight matching text
+                    highlightText(item, term);
+                } else {
+                    item.style.display = 'none';
+                    removeHighlights(item);
+                }
+            });
+            
+            // Show no results message if needed
+            if (visibleCount === 0) {
+                noResults.classList.add('show');
+            } else {
+                noResults.classList.remove('show');
+            }
+        }
+        
+        // Highlight matching text (simple version)
+        function highlightText(item, term) {
+            removeHighlights(item);
+            
+            const question = item.querySelector('.faq-question span');
+            const answer = item.querySelector('.faq-answer p');
+            
+            highlightElement(question, term);
+            highlightElement(answer, term);
+        }
+        
+        function highlightElement(element, term) {
+            const text = element.innerHTML;
+            const regex = new RegExp(term, 'gi');
+            const newText = text.replace(regex, match => `<mark class="faq-highlight">${match}</mark>`);
+            element.innerHTML = newText;
+        }
+        
+        function removeHighlights(item) {
+            const marks = item.querySelectorAll('mark.faq-highlight');
+            marks.forEach(mark => {
+                const parent = mark.parentNode;
+                parent.replaceChild(document.createTextNode(mark.textContent), mark);
+                parent.normalize();
+            });
+        }
+        
+        // Initialize the FAQs
+        initFAQs();
+        
+        // Add CSS for highlights
+        const style = document.createElement('style');
+        style.textContent = `
+            .faq-highlight {
+                background-color: rgba(255, 68, 204, 0.2);
+                border-radius: 2px;
+                padding: 0 2px;
+            }
+        `;
+        document.head.appendChild(style);
+    });
+</script>
+{% endblock %}

@@ -137,11 +137,11 @@
         
         <div class="outfit-content">
             <div class="outfit-image">
-                <i class="fas fa-tshirt"></i>
+                <img src="{{ outfit.image.url }}" alt="{{ outfit.name }}" class="outfit-image">
             </div>
             
             <div class="outfit-details">
-                <div class="price-tag">${{ outfit.price }}</div>
+                <div class="price-tag">Ksh{{ outfit.price }}</div>
                 
                 <p class="description">{{ outfit.description }}</p>
                 

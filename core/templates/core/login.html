@@ -1,11 +1,175 @@
 {% extends 'core/base.html' %}
+{% load static %}
 {% block title %}Login{% endblock %}
+
+
+
+
 {% block content %}
-<h2>Login</h2>
-<form method="post" action="{% url 'login' %}">
-  {% csrf_token %}
-  {{ form.as_p }}
-  <button type="submit">Login</button>
-</form>
-<p>Don't have an account? <a href="{% url 'signup' %}">Sign up</a></p>
+<div class="login-container">
+    <div class="login-card">
+        <div class="login-header">
+            <h1 class="login-title">Welcome Back</h1>
+            <p class="login-subtitle">Sign in to your account to continue</p>
+        </div>
+
+        <form method="post" action="{% url 'login' %}" class="login-form" id="loginForm">
+            {% csrf_token %}
+            
+            <!-- Username Field -->
+            <div class="login-form-group">
+                <label class="login-form-label" for="login_username">
+                    <i class="fas fa-user" style="margin-right: 8px;"></i>
+                    Username
+                </label>
+                <input type="text" name="username" id="login_username" class="login-form-input" 
+                       placeholder="Enter your username" autocomplete="username" required>
+            </div>
+
+            <!-- Password Field -->
+            <div class="login-form-group">
+                <label class="login-form-label" for="login_password">
+                    <i class="fas fa-lock" style="margin-right: 8px;"></i>
+                    Password
+                </label>
+                <input type="password" name="password" id="login_password" class="login-form-input" 
+                       placeholder="Enter your password" autocomplete="current-password" required>
+                <button type="button" class="login-password-toggle" id="login_toggle_password">
+                    <i class="fas fa-eye"></i>
+                </button>
+            </div>
+
+            <!-- Non-field errors -->
+            {% if form.non_field_errors %}
+            <div class="login-error-message show" id="login_non_field_errors">
+                {% for error in form.non_field_errors %}
+                    {{ error }}
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="login-error-message" id="login_non_field_errors"></div>
+            {% endif %}
+
+            <div class="login-options">
+                <label class="login-remember">
+                    <input type="checkbox" name="remember" id="login_remember">
+                    Remember me
+                </label>
+                <a href="#" class="login-forgot">Forgot password?</a>
+            </div>
+
+            <button type="submit" class="login-form-submit">
+                <i class="fas fa-sign-in-alt" style="margin-right: 8px;"></i>
+                Login
+            </button>
+
+            <div class="login-social-divider">
+                <span>Or continue with</span>
+            </div>
+
+            <div class="login-social-buttons">
+                <button type="button" class="login-social-btn google">
+                    <i class="fab fa-google" style="margin-right: 8px;"></i> Google
+                </button>
+                <button type="button" class="login-social-btn facebook">
+                    <i class="fab fa-facebook-f" style="margin-right: 8px;"></i> Facebook
+                </button>
+            </div>
+
+            <div class="login-alternative">
+                Don't have an account? <a href="{% url 'signup' %}">Sign up</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.getElementById('loginForm');
+        const passwordToggle = document.getElementById('login_toggle_password');
+        const passwordField = document.getElementById('login_password');
+        const errorContainer = document.getElementById('login_non_field_errors');
+        
+        // Password visibility toggle
+        passwordToggle.addEventListener('click', function() {
+            const type = passwordField.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordField.setAttribute('type', type);
+            
+            // Toggle eye icon
+            const icon = this.querySelector('i');
+            if (type === 'text') {
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
+        });
+        
+        // Clear error when user starts typing
+        const inputs = form.querySelectorAll('input');
+        inputs.forEach(input => {
+            input.addEventListener('input', function() {
+                if (errorContainer.classList.contains('show')) {
+                    errorContainer.classList.remove('show');
+                }
+                
+                if (this.classList.contains('error')) {
+                    this.classList.remove('error');
+                }
+            });
+        });
+        
+        // Form submission handling
+        form.addEventListener('submit', function(e) {
+            let hasErrors = false;
+            
+            // Basic validation
+            const username = document.getElementById('login_username');
+            const password = document.getElementById('login_password');
+            
+            if (!username.value.trim()) {
+                username.classList.add('error');
+                showError('Please enter your username.');
+                hasErrors = true;
+            }
+            
+            if (!password.value) {
+                password.classList.add('error');
+                if (!hasErrors) showError('Please enter your password.');
+                hasErrors = true;
+            }
+            
+            if (hasErrors) {
+                e.preventDefault();
+                // Scroll to first error
+                const firstError = document.querySelector('.login-form-input.error');
+                if (firstError) {
+                    firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+            }
+        });
+        
+        function showError(message) {
+            errorContainer.textContent = message;
+            errorContainer.classList.add('show');
+        }
+        
+        // Social login buttons animation
+        const socialButtons = document.querySelectorAll('.login-social-btn');
+        socialButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                this.style.transform = 'translateY(0)';
+                setTimeout(() => {
+                    this.style.transform = '';
+                }, 200);
+                
+                // In a real application, this would redirect to the social login
+                alert('Social login would be implemented here.');
+            });
+        });
+    });
+</script>
 {% endblock %}

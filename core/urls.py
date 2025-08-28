@@ -26,14 +26,24 @@ urlpatterns = [
     # Cart & Orders
     path('cart/', views.view_cart, name='view_cart'),
     path('cart/add/<int:outfit_id>/', views.add_to_cart, name='add_to_cart'),
-    path('order/place/', views.place_order, name='place_order'),
-    path('orders/', views.OrderHistoryView.as_view(), name='order_history'),
+    path('cart/', views.view_cart, name='cart_detail'),   # Your cart page
+    path('checkout/', views.checkout, name='checkout'),     # Checkout logic
+    path("order/<int:order_id>/", views.order_detail, name="order_detail"),
+    path('order-confirmation/<int:order_id>/', views.order_confirmation, name='order_confirmation'),
+
+
     path('add-to-cart/', add_to_cart, name='add_to_cart'),
+    path("cart/remove/<int:item_id>/", views.remove_cart_item, name="remove_cart_item"),
+    path("cart/increase/<int:item_id>/", views.increase_cart_item, name="increase_cart_item"),
+    path("cart/decrease/<int:item_id>/", views.decrease_cart_item, name="decrease_cart_item"),
     path('toggle-wishlist/', views.toggle_wishlist, name='toggle_wishlist'),
     path('add-to-compare/', views.add_to_compare, name='add_to_compare'),
     path('compare/', views.Compare_page, name='compare'),
     path('wishlist/', views.Wishlist_page, name='wishlist'),
     path("compare/add/<int:outfit_id>/", views.add_to_compare, name="add_to_compare"),
+    path("wishlist/remove/<int:outfit_id>/", views.remove_from_wishlist, name="remove_from_wishlist"),
+    path("remove-from-compare/", views.remove_from_compare, name="remove_from_compare"),
+
 
 
 
@@ -56,6 +66,20 @@ urlpatterns = [
 
      # Contact Us
      path('contact/', views.contact_view, name='contact'),
+
+     # FAQs
+     path('faqs/', views.faqs, name='faqs'),
+
+     #Shipping policy
+     path('shipping/', views.shipping, name='shipping'),
+
+     #Returns policy
+     path('returns/', views.returns, name='returns'),
+
+     #Terms and Conditions
+     path('terms/', views.terms, name='terms'),
+     #Privacy Policy
+     path('privacy/', views.privacy, name='privacy'),
 
 ]
 

@@ -1,10 +1,271 @@
 {% extends 'core/base.html' %}
+{% load static %}
 {% block title %}Add Outfit{% endblock %}
+
+<style>
+  
+</style>
+
+
 {% block content %}
-<h1>Add / Edit Outfit</h1>
-<form method="post" enctype="multipart/form-data">
-  {% csrf_token %}
-  {{ form.as_p }}
-  <button type="submit">Save</button>
-</form>
+<div class="fashion-form-container">
+    <div class="fashion-form-header">
+        <h1>Create Your Outfit</h1>
+        <p>Design a stunning outfit that reflects your unique style</p>
+    </div>
+
+    <div class="fashion-form-content">
+        <form method="post" enctype="multipart/form-data" id="fashionOutfitForm">
+            {% csrf_token %}
+            
+            <div class="fashion-form-grid">
+                <!-- Name Field -->
+                <div class="fashion-form-group">
+                    <label class="fashion-form-label" for="fashion_id_name">
+                        <i class="fas fa-tag" style="margin-right: 8px;"></i>
+                        Outfit Name
+                    </label>
+                    <input type="text" name="name" id="fashion_id_name" class="fashion-form-input" placeholder="Enter outfit name" 
+                           value="{{ form.name.value|default:'' }}" required>
+                </div>
+
+                <!-- Price Field -->
+                <div class="fashion-form-group">
+                    <label class="fashion-form-label" for="fashion_id_price">
+                        <i class="fas fa-dollar-sign" style="margin-right: 8px;"></i>
+                        Price
+                    </label>
+                    <input type="number" name="price" id="fashion_id_price" class="fashion-form-input" placeholder="0.00" step="0.01" 
+                           value="{{ form.price.value|default:'' }}" required>
+                </div>
+
+                <!-- Category Field -->
+                <div class="fashion-form-group">
+                    <label class="fashion-form-label" for="fashion_id_category">
+                        <i class="fas fa-list" style="margin-right: 8px;"></i>
+                        Category
+                    </label>
+                    <select name="category" id="fashion_id_category" class="fashion-form-select" required>
+                        {% for value, label in form.category.field.choices %}
+                            <option value="{{ value }}" {% if form.category.value == value %}selected{% endif %}>{{ label }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <!-- Brand Field -->
+                <div class="fashion-form-group">
+                    <label class="fashion-form-label" for="fashion_id_brand">
+                        <i class="fas fa-copyright" style="margin-right: 8px;"></i>
+                        Brand
+                    </label>
+                    <input type="text" name="brand" id="fashion_id_brand" class="fashion-form-input" placeholder="Enter brand name" 
+                           value="{{ form.brand.value|default:'' }}">
+                </div>
+
+                <!-- Color Field -->
+                <div class="fashion-form-group">
+                    <label class="fashion-form-label" for="fashion_id_color">
+                        <i class="fas fa-palette" style="margin-right: 8px;"></i>
+                        Color
+                    </label>
+                    <input type="text" name="color" id="fashion_id_color" class="fashion-form-input" placeholder="Enter color" 
+                           value="{{ form.color.value|default:'' }}">
+                </div>
+
+                <!-- Size Field -->
+                <div class="fashion-form-group">
+                    <label class="fashion-form-label" for="fashion_id_size">
+                        <i class="fas fa-ruler" style="margin-right: 8px;"></i>
+                        Size
+                    </label>
+                    <input type="text" name="size" id="fashion_id_size" class="fashion-form-input" placeholder="Enter size" 
+                           value="{{ form.size.value|default:'' }}">
+                </div>
+
+                <!-- Material Field -->
+                <div class="fashion-form-group">
+                    <label class="fashion-form-label" for="fashion_id_material">
+                        <i class="fas fa-tshirt" style="margin-right: 8px;"></i>
+                        Material
+                    </label>
+                    <input type="text" name="material" id="fashion_id_material" class="fashion-form-input" placeholder="Enter material" 
+                           value="{{ form.material.value|default:'' }}">
+                </div>
+
+                <!-- Is Active Field -->
+                <div class="fashion-form-group">
+                    <div class="fashion-checkbox-container">
+                        <input type="checkbox" name="is_active" id="fashion_id_is_active" class="fashion-form-checkbox" 
+                               {% if form.is_active.value %}checked{% endif %}>
+                        <label class="fashion-form-label" for="fashion_id_is_active" style="margin-bottom: 0;">
+                            <i class="fas fa-check-circle" style="margin-right: 8px;"></i>
+                            Active
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Image Field -->
+                <div class="fashion-form-group fashion-form-group-full">
+                    <label class="fashion-form-label">
+                        <i class="fas fa-camera" style="margin-right: 8px;"></i>
+                        Outfit Image
+                    </label>
+                    <div class="fashion-file-upload-area" id="fashionUploadContainer">
+                        <div class="fashion-upload-icon">📷</div>
+                        <p class="fashion-upload-text">Drag & drop your image here</p>
+                        <p class="fashion-upload-subtext">or click to browse files (JPEG, PNG)</p>
+                        <input type="file" name="image" id="fashion_id_image" class="fashion-file-input" accept="image/*">
+                    </div>
+                    <div id="fashionFileName" style="margin-top: 1rem; text-align: center; font-weight: 500; color: var(--fashion-secondary);"></div>
+                    <div class="fashion-preview-container">
+                        <img id="fashionImagePreview" class="fashion-preview-image" src="" alt="Preview">
+                    </div>
+                </div>
+
+                <!-- Description Field -->
+                <div class="fashion-form-group fashion-form-group-full">
+                    <label class="fashion-form-label" for="fashion_id_description">
+                        <i class="fas fa-align-left" style="margin-right: 8px;"></i>
+                        Description
+                    </label>
+                    <textarea name="description" id="fashion_id_description" class="fashion-form-textarea" 
+                              placeholder="Describe your outfit...">{{ form.description.value|default:'' }}</textarea>
+                </div>
+            </div>
+
+            <button type="submit" class="fashion-form-submit-btn">
+                <i class="fas fa-plus-circle" style="margin-right: 8px;"></i>
+                Save Outfit
+            </button>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const fileInput = document.getElementById('fashion_id_image');
+        const uploadContainer = document.getElementById('fashionUploadContainer');
+        const fileName = document.getElementById('fashionFileName');
+        const imagePreview = document.getElementById('fashionImagePreview');
+        
+        // File upload interaction
+        fileInput.addEventListener('change', function() {
+            if (this.files.length > 0) {
+                fileName.textContent = 'Selected: ' + this.files[0].name;
+                
+                // Preview image
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    imagePreview.src = e.target.result;
+                    imagePreview.style.display = 'block';
+                }
+                reader.readAsDataURL(this.files[0]);
+            } else {
+                fileName.textContent = '';
+                imagePreview.style.display = 'none';
+            }
+        });
+        
+        // Drag and drop functionality
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            uploadContainer.addEventListener(eventName, preventDefaults, false);
+        });
+        
+        function preventDefaults(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+        
+        ['dragenter', 'dragover'].forEach(eventName => {
+            uploadContainer.addEventListener(eventName, highlight, false);
+        });
+        
+        ['dragleave', 'drop'].forEach(eventName => {
+            uploadContainer.addEventListener(eventName, unhighlight, false);
+        });
+        
+        function highlight() {
+            uploadContainer.classList.add('dragover');
+        }
+        
+        function unhighlight() {
+            uploadContainer.classList.remove('dragover');
+        }
+        
+        uploadContainer.addEventListener('drop', handleDrop, false);
+        
+        function handleDrop(e) {
+            const dt = e.dataTransfer;
+            const files = dt.files;
+            fileInput.files = files;
+            
+            if (files.length > 0) {
+                fileName.textContent = 'Selected: ' + files[0].name;
+                
+                // Preview image
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    imagePreview.src = e.target.result;
+                    imagePreview.style.display = 'block';
+                }
+                reader.readAsDataURL(files[0]);
+            }
+        }
+        
+        // Form validation with improved UX
+        const form = document.getElementById('fashionOutfitForm');
+        const requiredFields = form.querySelectorAll('[required]');
+        
+        requiredFields.forEach(field => {
+            field.addEventListener('blur', function() {
+                if (!this.value.trim()) {
+                    this.style.borderColor = '#ef4444';
+                    this.style.animation = 'shake 0.5s';
+                    setTimeout(() => {
+                        this.style.animation = '';
+                    }, 500);
+                } else {
+                    this.style.borderColor = '';
+                }
+            });
+        });
+        
+        form.addEventListener('submit', function(e) {
+            let valid = true;
+            
+            requiredFields.forEach(field => {
+                if (!field.value.trim()) {
+                    valid = false;
+                    field.style.borderColor = '#ef4444';
+                    field.style.animation = 'shake 0.5s';
+                    setTimeout(() => {
+                        field.style.animation = '';
+                    }, 500);
+                }
+            });
+            
+            if (!valid) {
+                e.preventDefault();
+                // Smooth scroll to first error
+                const firstError = form.querySelector('[required]:invalid');
+                if (firstError) {
+                    firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+            }
+        });
+        
+        // Add shake animation for errors
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes shake {
+                0%, 100% { transform: translateX(0); }
+                10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+                20%, 40%, 60%, 80% { transform: translateX(5px); }
+            }
+        `;
+        document.head.appendChild(style);
+    });
+</script>
 {% endblock %}

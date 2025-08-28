@@ -21,7 +21,7 @@
                 </div>
                 <div class="item-details">
                     <h3 class="item-name">{{ item.outfit.name }}</h3>
-                    <p class="item-price">${{ item.outfit.price }}</p>
+                    <p class="item-price">Ksh{{ item.outfit.price }}</p>
                     <div class="item-actions">
                         <form method="post" action="{% url 'add_to_cart' item.outfit.id %}">
                             {% csrf_token %}
@@ -62,6 +62,31 @@
             .then(data => alert(data.message));
         });
     });
+
+    // Remove from Wishlist
+document.addEventListener("DOMContentLoaded", function() {
+    document.querySelectorAll(".remove-wishlist").forEach(button => {
+        button.addEventListener("click", function(e) {
+            e.preventDefault();
+            let outfitId = this.getAttribute("data-outfit-id");
+
+            fetch(`/wishlist/remove/${outfitId}/`, {
+                method: "POST",
+                headers: {
+                    "X-CSRFToken": "{{ csrf_token }}",
+                },
+            })
+            .then(response => {
+                if (response.ok) {
+                    // Remove the outfit card from DOM
+                    this.closest(".item-image").parentElement.remove();
+                }
+            })
+            .catch(error => console.error("Error:", error));
+        });
+    });
+});
+
 
 </script>
 

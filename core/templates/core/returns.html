@@ -1,0 +1,824 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Easy Returns & Exchanges | Ellana FashionHub{% endblock %}
+
+{% block content %}
+
+<style>
+    
+    /* Returns Page Styles */
+:root {
+    --primary-color: #e83e8c;
+    --secondary-color: #6f42c1;
+    --accent-color: #20c997;
+    --dark-color: #212529;
+    --light-color: #f8f9fa;
+    --gray-color: #6c757d;
+    --light-gray: #e9ecef;
+}
+
+/* Hero Section */
+.returns-hero {
+    display: flex;
+    align-items: center;
+    min-height: 80vh;
+    padding: 2rem 5%;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    position: relative;
+    overflow: hidden;
+}
+
+.returns-hero::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -10%;
+    width: 500px;
+    height: 500px;
+    border-radius: 50%;
+    background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+    opacity: 0.1;
+    animation: float 8s ease-in-out infinite;
+}
+
+.returns-hero::after {
+    content: '';
+    position: absolute;
+    bottom: -30%;
+    left: -10%;
+    width: 400px;
+    height: 400px;
+    border-radius: 50%;
+    background: linear-gradient(45deg, var(--secondary-color), var(--accent-color));
+    opacity: 0.1;
+    animation: float 10s ease-in-out infinite;
+}
+
+.r-hero-content {
+    flex: 1;
+    z-index: 1;
+}
+
+.r-hero-title {
+    font-size: 3.5rem;
+    font-weight: 800;
+    margin-bottom: 1.5rem;
+    color: var(--dark-color);
+    animation: slideInLeft 1s ease-out;
+}
+
+.highlight {
+    background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    position: relative;
+}
+
+.r-hero-subtitle {
+    font-size: 1.5rem;
+    color: var(--gray-color);
+    margin-bottom: 2.5rem;
+    animation: slideInLeft 1s ease-out 0.2s both;
+}
+
+.r-hero-cta {
+    display: flex;
+    gap: 1rem;
+    animation: slideInLeft 1s ease-out 0.4s both;
+}
+
+.cta-btn {
+    display: inline-block;
+    padding: 1rem 2rem;
+    border-radius: 50px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.cta-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: all 0.6s ease;
+}
+
+.cta-btn:hover::before {
+    left: 100%;
+}
+
+.cta-btn:not(.secondary) {
+    background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+    color: white;
+    box-shadow: 0 4px 15px rgba(232, 62, 140, 0.3);
+}
+
+.cta-btn.secondary {
+    background: transparent;
+    color: var(--dark-color);
+    border: 2px solid var(--dark-color);
+}
+
+.cta-btn.large {
+    padding: 1.2rem 2.5rem;
+    font-size: 1.1rem;
+}
+
+.r-hero-visual {
+    flex: 1;
+    position: relative;
+    height: 400px;
+    z-index: 1;
+}
+
+.floating-box {
+    position: absolute;
+    background: white;
+    padding: 1.5rem;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 150px;
+    height: 150px;
+    animation: float 6s ease-in-out infinite;
+}
+
+.floating-box:nth-child(1) {
+    top: 0;
+    right: 30%;
+    animation-delay: 0s;
+    color: var(--primary-color);
+}
+
+.floating-box:nth-child(2) {
+    top: 50%;
+    right: 10%;
+    transform: translateY(-50%);
+    animation-delay: 2s;
+    color: var(--secondary-color);
+}
+
+.floating-box:nth-child(3) {
+    bottom: 0;
+    right: 40%;
+    animation-delay: 4s;
+    color: var(--accent-color);
+}
+
+.floating-box i {
+    font-size: 2.5rem;
+    margin-bottom: 0.8rem;
+}
+
+.floating-box span {
+    font-weight: 600;
+    text-align: center;
+}
+
+/* Section Styles */
+.r-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+}
+
+section {
+    padding: 5rem 0;
+}
+
+.r-section-title {
+    text-align: center;
+    font-size: 2.5rem;
+    margin-bottom: 3rem;
+    position: relative;
+    padding-bottom: 1rem;
+}
+
+.r-section-title::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80px;
+    height: 4px;
+    background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+    border-radius: 2px;
+}
+
+/* Policy Overview */
+.policy-overview {
+    background-color: white;
+}
+
+.policy-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+}
+
+.policy-card {
+    background: white;
+    padding: 2.5rem 2rem;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    text-align: center;
+    transition: all 0.3s ease;
+    opacity: 0;
+    transform: translateY(20px);
+}
+
+.policy-card.animate-in {
+    animation: fadeInUp 0.6s ease forwards;
+}
+
+.policy-card:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.policy-card:nth-child(3) {
+    animation-delay: 0.4s;
+}
+
+.policy-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+}
+
+.policy-icon {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1.5rem;
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    color: white;
+    font-size: 2rem;
+}
+
+.policy-card h3 {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    color: var(--dark-color);
+}
+
+.policy-card p {
+    color: var(--gray-color);
+    line-height: 1.6;
+}
+
+/* Return Process */
+.return-process {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+}
+
+.process-steps {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    margin-bottom: 3rem;
+}
+
+.step {
+    display: flex;
+    align-items: flex-start;
+    gap: 1.5rem;
+    opacity: 0;
+    transform: translateX(-20px);
+}
+
+.step.animate-in {
+    animation: slideInRight 0.6s ease forwards;
+}
+
+.step:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.step:nth-child(3) {
+    animation-delay: 0.4s;
+}
+
+.step:nth-child(4) {
+    animation-delay: 0.6s;
+}
+
+.step-number {
+    min-width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    color: white;
+    font-weight: bold;
+    font-size: 1.2rem;
+    flex-shrink: 0;
+}
+
+.step-content h3 {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+    color: var(--dark-color);
+}
+
+.step-content p {
+    color: var(--gray-color);
+    line-height: 1.6;
+}
+
+.process-cta {
+    text-align: center;
+}
+
+/* FAQ Section */
+.faq-section {
+    background-color: white;
+}
+
+.faq-container {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.faq-item {
+    margin-bottom: 1rem;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    opacity: 0;
+    transform: translateY(20px);
+}
+
+.faq-item.animate-in {
+    animation: fadeInUp 0.6s ease forwards;
+}
+
+.faq-item:nth-child(2) {
+    animation-delay: 0.1s;
+}
+
+.faq-item:nth-child(3) {
+    animation-delay: 0.2s;
+}
+
+.faq-item:nth-child(4) {
+    animation-delay: 0.3s;
+}
+
+.faq-question {
+    width: 100%;
+    padding: 1.5rem;
+    text-align: left;
+    background: white;
+    border: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.faq-question:hover {
+    background: var(--light-gray);
+}
+
+.faq-question i {
+    transition: transform 0.3s ease;
+}
+
+.faq-item.active .faq-question i {
+    transform: rotate(180deg);
+}
+
+.faq-answer {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+    background: white;
+}
+
+.faq-item.active .faq-answer {
+    max-height: 200px;
+}
+
+.faq-answer p {
+    padding: 0 1.5rem 1.5rem;
+    margin: 0;
+    color: var(--gray-color);
+    line-height: 1.6;
+}
+
+/* Support Section */
+.support-section {
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    color: white;
+    text-align: center;
+}
+
+.support-content h2 {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+}
+
+.support-content > p {
+    font-size: 1.2rem;
+    margin-bottom: 2.5rem;
+    opacity: 0.9;
+}
+
+.support-options {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    flex-wrap: wrap;
+}
+
+.support-option {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 2rem;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 15px;
+    text-decoration: none;
+    color: white;
+    transition: all 0.3s ease;
+    min-width: 150px;
+}
+
+.support-option:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: translateY(-5px);
+}
+
+.support-option i {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+}
+
+.support-option span {
+    font-weight: 600;
+}
+
+/* Animations */
+@keyframes float {
+    0% {
+        transform: translateY(0) rotate(0deg);
+    }
+    50% {
+        transform: translateY(-20px) rotate(5deg);
+    }
+    100% {
+        transform: translateY(0) rotate(0deg);
+    }
+}
+
+@keyframes slideInLeft {
+    from {
+        opacity: 0;
+        transform: translateX(-50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes slideInRight {
+    from {
+        opacity: 0;
+        transform: translateX(50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Responsive Design */
+@media (max-width: 992px) {
+    .returns-hero {
+        flex-direction: column;
+        text-align: center;
+        padding-top: 4rem;
+    }
+    
+    .r-hero-title {
+        font-size: 2.8rem;
+    }
+    
+    .r-hero-cta {
+        justify-content: center;
+    }
+    
+    .r-hero-visual {
+        margin-top: 3rem;
+        height: 300px;
+    }
+}
+
+@media (max-width: 768px) {
+    .r-section-title {
+        font-size: 2rem;
+    }
+    
+    .r-hero-title {
+        font-size: 2.2rem;
+    }
+    
+    .r-hero-subtitle {
+        font-size: 1.2rem;
+    }
+    
+    .floating-box {
+        width: 120px;
+        height: 120px;
+        padding: 1rem;
+    }
+    
+    .floating-box i {
+        font-size: 2rem;
+    }
+    
+    .support-options {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .support-option {
+        width: 100%;
+        max-width: 250px;
+    }
+}
+
+@media (max-width: 576px) {
+    .r-hero-cta {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .r-hero-visual {
+        height: 250px;
+    }
+    
+    .floating-box {
+        width: 100px;
+        height: 100px;
+    }
+    
+    .floating-box i {
+        font-size: 1.5rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    .floating-box span {
+        font-size: 0.9rem;
+    }
+    
+    .policy-cards {
+        grid-template-columns: 1fr;
+    }
+}
+
+
+</style>
+<!-- Hero Section -->
+<section class="returns-hero">
+    <div class="r-hero-content">
+        <h1 class="r-hero-title">Hassle-Free <span class="highlight">Returns</span></h1>
+        <p class="r-hero-subtitle">Not satisfied? We make returns easy and convenient</p>
+        <div class="r-hero-cta">
+            <a href="#return-process" class="cta-btn">Start a Return</a>
+            <a href="#faq" class="cta-btn secondary">View FAQs</a>
+        </div>
+    </div>
+    <div class="r-hero-visual">
+        <div class="floating-box">
+            <i class="fas fa-undo"></i>
+            <span>Easy Returns</span>
+        </div>
+        <div class="floating-box">
+            <i class="fas fa-truck"></i>
+            <span>Free Shipping</span>
+        </div>
+        <div class="floating-box">
+            <i class="fas fa-clock"></i>
+            <span>30 Days Policy</span>
+        </div>
+    </div>
+</section>
+
+<!-- Policy Overview -->
+<section class="policy-overview">
+    <div class="r-container">
+        <h2 class="r-section-title">Our Return Policy</h2>
+        <div class="policy-cards">
+            <div class="policy-card">
+                <div class="policy-icon">
+                    <i class="fas fa-calendar-check"></i>
+                </div>
+                <h3>30 Days Return</h3>
+                <p>Return within 30 days of receiving your order for a full refund.</p>
+            </div>
+            <div class="policy-card">
+                <div class="policy-icon">
+                    <i class="fas fa-tag"></i>
+                </div>
+                <h3>Free Returns</h3>
+                <p>We offer free returns on all domestic orders.</p>
+            </div>
+            <div class="policy-card">
+                <div class="policy-icon">
+                    <i class="fas fa-exchange-alt"></i>
+                </div>
+                <h3>Easy Exchange</h3>
+                <p>Exchange for a different size or color at no extra cost.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Return Process -->
+<section id="return-process" class="return-process">
+    <div class="r-container">
+        <h2 class="r-section-title">How to Return</h2>
+        <div class="process-steps">
+            <div class="step">
+                <div class="step-number">1</div>
+                <div class="step-content">
+                    <h3>Initiate Return</h3>
+                    <p>Log into your account and select the items you want to return.</p>
+                </div>
+            </div>
+            <div class="step">
+                <div class="step-number">2</div>
+                <div class="step-content">
+                    <h3>Print Label</h3>
+                    <p>Print the prepaid shipping label we provide.</p>
+                </div>
+            </div>
+            <div class="step">
+                <div class="step-number">3</div>
+                <div class="step-content">
+                    <h3>Pack & Ship</h3>
+                    <p>Pack your items and drop them off at any shipping carrier.</p>
+                </div>
+            </div>
+            <div class="step">
+                <div class="step-number">4</div>
+                <div class="step-content">
+                    <h3>Get Refunded</h3>
+                    <p>Receive your refund once we process the return.</p>
+                </div>
+            </div>
+        </div>
+        <div class="process-cta">
+            <a href="#" class="cta-btn large">Start Return Process</a>
+        </div>
+    </div>
+</section>
+
+<!-- FAQ Section -->
+<section id="faq" class="faq-section">
+    <div class="r-container">
+        <h2 class="r-section-title">Frequently Asked Questions</h2>
+        <div class="faq-container">
+            <div class="faq-item">
+                <button class="faq-question">
+                    How long does it take to process a refund?
+                    <i class="fas fa-chevron-down"></i>
+                </button>
+                <div class="faq-answer">
+                    <p>Refunds are processed within 5-7 business days after we receive your return. The time it takes for the refund to appear in your account depends on your bank's processing time.</p>
+                </div>
+            </div>
+            <div class="faq-item">
+                <button class="faq-question">
+                    What items cannot be returned?
+                    <i class="fas fa-chevron-down"></i>
+                </button>
+                <div class="faq-answer">
+                    <p>For hygiene reasons, intimate apparel, swimwear, and earrings cannot be returned unless defective. Sale items are final sale unless otherwise stated.</p>
+                </div>
+            </div>
+            <div class="faq-item">
+                <button class="faq-question">
+                    Can I exchange an item instead of returning?
+                    <i class="fas fa-chevron-down"></i>
+                </button>
+                <div class="faq-answer">
+                    <p>Yes! We offer free exchanges for size or color. Simply select the exchange option when initiating your return.</p>
+                </div>
+            </div>
+            <div class="faq-item">
+                <button class="faq-question">
+                    Do you offer international returns?
+                    <i class="fas fa-chevron-down"></i>
+                </button>
+                <div class="faq-answer">
+                    <p>Yes, but international returns are not free. Customers are responsible for return shipping costs for international orders.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Contact Support -->
+<section class="support-section">
+    <div class="r-container">
+        <div class="support-content">
+            <h2>Need More Help?</h2>
+            <p>Our customer service team is here to assist you with any questions about returns or exchanges.</p>
+            <div class="support-options">
+                <a href="#" class="support-option">
+                    <i class="fas fa-comments"></i>
+                    <span>Live Chat</span>
+                </a>
+                <a href="#" class="support-option">
+                    <i class="fas fa-envelope"></i>
+                    <span>Email Us</span>
+                </a>
+                <a href="#" class="support-option">
+                    <i class="fas fa-phone"></i>
+                    <span>Call Support</span>
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // FAQ accordion functionality
+    const faqItems = document.querySelectorAll('.faq-item');
+    
+    faqItems.forEach(item => {
+        const question = item.querySelector('.faq-question');
+        
+        question.addEventListener('click', () => {
+            const isOpen = item.classList.contains('active');
+            
+            // Close all items
+            faqItems.forEach(faqItem => {
+                faqItem.classList.remove('active');
+            });
+            
+            // Open clicked item if it was closed
+            if (!isOpen) {
+                item.classList.add('active');
+            }
+        });
+    });
+    
+    // Animate elements on scroll
+    const observerOptions = {
+        root: null,
+        rootMargin: '0px',
+        threshold: 0.1
+    };
+    
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('animate-in');
+            }
+        });
+    }, observerOptions);
+    
+    // Observe elements to animate
+    const elementsToAnimate = document.querySelectorAll('.policy-card, .step, .faq-item');
+    elementsToAnimate.forEach(el => {
+        observer.observe(el);
+    });
+});
+</script>
+{% endblock %}

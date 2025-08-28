@@ -13,6 +13,7 @@ from django.db.models import Count, Avg
 from django.views.decorators.http import require_POST
 from django.http import JsonResponse
 from django.db import models
+from django.core.exceptions import ValidationError
 
 
 
@@ -265,6 +266,65 @@ def add_to_cart(request, outfit_id=None):
         return JsonResponse({'success': False, 'message': 'Outfit not found'}, status=404)
 
 
+
+def remove_cart_item(request, item_id):
+    if request.method == "POST":
+        item = get_object_or_404(Cart, id=item_id)
+        item.delete()
+        return JsonResponse({"success": True, "item_id": item_id})
+    return JsonResponse({"success": False}, status=400)
+
+
+@login_required
+def increase_cart_item(request, item_id):
+    if request.method == "POST":
+        item = get_object_or_404(Cart, id=item_id, user=request.user)
+        try:
+            # Optional: Add stock check if Outfit has 'stock' field
+            if hasattr(item.outfit, 'stock') and item.quantity + 1 > item.outfit.stock:
+                return JsonResponse({"success": False, "error": f"Only {item.outfit.stock} in stock."}, status=400)
+            item.quantity += 1
+            item.save()
+            cart_total = sum(i.total_price for i in Cart.objects.filter(user=request.user))
+            return JsonResponse({
+                "success": True,
+                "quantity": item.quantity,
+                "subtotal": str(item.total_price),  # Fixed: Use total_price
+                "cart_total": str(cart_total)
+            })
+        except ValidationError as e:
+            return JsonResponse({"success": False, "error": str(e)}, status=400)
+    return JsonResponse({"success": False, "error": "Invalid request"}, status=400)
+
+@login_required
+def decrease_cart_item(request, item_id):
+    if request.method == "POST":
+        item = get_object_or_404(Cart, id=item_id, user=request.user)
+        try:
+            if item.quantity > 1:
+                item.quantity -= 1
+                item.save()
+            else:
+                # Optional: Delete if quantity would be 0
+                item.delete()
+                return JsonResponse({
+                    "success": True,
+                    "quantity": 0,
+                    "subtotal": "0.00",
+                    "cart_total": str(sum(i.total_price for i in Cart.objects.filter(user=request.user)))
+                })
+            cart_total = sum(i.total_price for i in Cart.objects.filter(user=request.user))
+            return JsonResponse({
+                "success": True,
+                "quantity": item.quantity,
+                "subtotal": str(item.total_price),  # Fixed: Use total_price
+                "cart_total": str(cart_total)
+            })
+        except ValidationError as e:
+            return JsonResponse({"success": False, "error": str(e)}, status=400)
+    return JsonResponse({"success": False, "error": "Invalid request"}, status=400)
+
+
 @require_POST
 @login_required
 def toggle_wishlist(request):
@@ -290,6 +350,14 @@ def toggle_wishlist(request):
         })
     except Outfit.DoesNotExist:
         return JsonResponse({'success': False, 'message': 'Outfit not found'}, status=404)
+
+
+@login_required
+def remove_from_wishlist(request, outfit_id):
+    outfit = get_object_or_404(Outfit, id=outfit_id)
+    Wishlist.objects.filter(user=request.user, outfit=outfit).delete()
+    return JsonResponse({"success": True})
+
 
 @require_POST
 @login_required
@@ -327,6 +395,17 @@ def add_to_compare(request):
         return JsonResponse({'success': False, 'message': 'Outfit not found'}, status=404)
 
 
+
+def remove_from_compare(request):
+    if request.method == "POST":
+        outfit_id = request.POST.get("outfit_id")
+        compare_item = get_object_or_404(Compare, outfit__id=outfit_id, user=request.user)
+        compare_item.delete()
+        return JsonResponse({"success": True, "outfit_id": outfit_id})
+    return JsonResponse({"success": False}, status=400)
+
+
+
 def Compare_page(request):
     items = Compare.objects.filter(user=request.user)
     return render(request, 'core/compare.html', {'compare_items': items})
@@ -335,35 +414,51 @@ def Wishlist_page(request):
     items = Wishlist.objects.filter(user=request.user)
     return render(request, 'core/wishlist.html', {'wishlist_items': items})
 
+
 @login_required
-def place_order(request):
-    cart = request.session.get('cart', {})
-    if not cart:
+def checkout(request):
+    user = request.user  
+    cart_items = Cart.objects.filter(user=user)
+
+    if not cart_items.exists():
         messages.error(request, "Your cart is empty.")
-        return redirect('view_cart')
+        return redirect("cart_detail")
 
-    total = 0
-    order = Order.objects.create(customer=request.user.profile, status='pending', total_amount=0, payment_method='mpesa')
-    for outfit_id_str, quantity in cart.items():
-        outfit = get_object_or_404(Outfit, id=int(outfit_id_str))
-        subtotal = outfit.price * quantity
-        OrderItem.objects.create(order=order, outfit=outfit, quantity=quantity, price=outfit.price)
-        total += subtotal
+    # Calculate total
+    total_amount = sum(item.outfit.price * item.quantity for item in cart_items)
 
-    order.total_amount = total
-    order.save()
-    request.session['cart'] = {}
-    messages.success(request, "Order placed successfully.")
-    return redirect('order_history')
+    # Create order
+    order = Order.objects.create(
+        customer=user.profile,
+        total_amount=total_amount,
+        payment_method="mpesa"  # later you can let user choose
+    )
+
+    # Create OrderItems
+    for item in cart_items:
+        OrderItem.objects.create(
+            order=order,
+            outfit=item.outfit,
+            quantity=item.quantity,
+            price=item.outfit.price
+        )
+
+    # Clear cart
+    cart_items.delete()
+
+    messages.success(request, f"Order #{order.pk} has been placed successfully!")
+    return redirect("order_detail", order_id=order.id)  # take them to order summary
 
 
-class OrderHistoryView(LoginRequiredMixin, ListView):
-    model = Order
-    template_name = 'core/order_history.html'
-    context_object_name = 'orders'
+@login_required
+def order_detail(request, order_id):
+    order = Order.objects.get(id=order_id, customer=request.user.profile)
+    return render(request, "core/order_detail.html", {"order": order})
 
-    def get_queryset(self):
-        return Order.objects.filter(customer=self.request.user.profile).order_by('-created_at')
+
+def order_confirmation(request, order_id):
+    order = get_object_or_404(Order, id=order_id)
+    return render(request, "core/order_confirmation.html", {"order": order})
 
 
 # -------------------------
@@ -485,3 +580,22 @@ def contact_view(request):
         form = MessageForm()
     return render(request, 'core/contact.html', {'form': form})    
 
+@login_required
+def faqs(request):
+    return render(request, 'core/faqs.html')
+
+@login_required
+def shipping(request):
+    return render(request, 'core/shipping.html')
+
+@login_required
+def returns(request):
+    return render(request, 'core/returns.html')
+
+@login_required
+def terms(request):
+    return render(request, 'core/terms.html')
+
+@login_required
+def privacy(request):
+    return render(request, 'core/privacy.html')

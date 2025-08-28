@@ -1,0 +1,639 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}Privacy Policy | Ellana FashionHub{% endblock %}
+
+
+{% block content %}
+
+<style>
+    
+/* Privacy Policy Styling */
+.privacy-container {
+    font-family: 'Poppins', sans-serif;
+    color: #333;
+    line-height: 1.6;
+}
+
+/* Hero Section */
+.privacy-hero {
+    background: linear-gradient(135deg, #f8f6ff 0%, #fdf2f8 100%);
+    padding: 80px 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.privacy-hero::before {
+    content: '';
+    position: absolute;
+    top: -100px;
+    right: -100px;
+    width: 300px;
+    height: 300px;
+    border-radius: 50%;
+    background: rgba(255, 182, 193, 0.15);
+    z-index: 0;
+}
+
+.privacy-hero::after {
+    content: '';
+    position: absolute;
+    bottom: -80px;
+    left: -80px;
+    width: 250px;
+    height: 250px;
+    border-radius: 50%;
+    background: rgba(147, 112, 219, 0.1);
+    z-index: 0;
+}
+
+.p-hero-content {
+    max-width: 800px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 2;
+}
+
+.p-hero-title {
+    font-size: 3.5rem;
+    font-weight: 700;
+    color: #2d2d2d;
+    margin-bottom: 20px;
+    background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.p-hero-subtitle {
+    font-size: 1.25rem;
+    color: #666;
+    max-width: 700px;
+    margin: 0 auto 40px;
+}
+
+.p-hero-visual {
+    margin-top: 30px;
+}
+
+.privacy-shield {
+    width: 120px;
+    height: 120px;
+    background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12,1L3,5v6c0,5.55,3.84,10.74,9,12c5.16-1.26,9-6.45,9-12V5L12,1z' fill='%23000000'/%3E%3C/svg%3E") no-repeat center;
+    -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12,1L3,5v6c0,5.55,3.84,10.74,9,12c5.16-1.26,9-6.45,9-12V5L12,1z' fill='%23000000'/%3E%3C/svg%3E") no-repeat center;
+    mask-size: contain;
+    -webkit-mask-size: contain;
+    animation: pulse 2s infinite ease-in-out;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); opacity: 0.9; }
+    50% { transform: scale(1.05); opacity: 1; }
+    100% { transform: scale(1); opacity: 0.9; }
+}
+
+/* Policy Content */
+.policy-content {
+    padding: 80px 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.content-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 60px;
+}
+
+.policy-section {
+    scroll-margin-top: 30px;
+}
+
+.section-title {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #2d2d2d;
+    margin-bottom: 20px;
+    position: relative;
+    padding-left: 20px;
+}
+
+.section-title::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    height: 80%;
+    width: 8px;
+    background: linear-gradient(to bottom, #6a11cb, #2575fc);
+    border-radius: 4px;
+}
+
+.section-text {
+    font-size: 1.1rem;
+    color: #555;
+    margin-bottom: 20px;
+    line-height: 1.8;
+}
+
+/* Info Cards */
+.info-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 30px;
+    margin-top: 30px;
+}
+
+.info-card {
+    background: white;
+    border-radius: 16px;
+    padding: 30px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+    text-align: center;
+    border: 1px solid rgba(0, 0, 0, 0.03);
+}
+
+.info-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+}
+
+.card-icon {
+    width: 70px;
+    height: 70px;
+    margin: 0 auto 20px;
+    background: linear-gradient(135deg, #f8f6ff 0%, #fdf2f8 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    color: #6a11cb;
+}
+
+.info-card h3 {
+    font-size: 1.3rem;
+    margin-bottom: 15px;
+    color: #2d2d2d;
+}
+
+.info-card p {
+    color: #666;
+    line-height: 1.6;
+}
+
+/* Usage List */
+.usage-list {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+    margin-top: 30px;
+}
+
+.usage-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 20px;
+    padding: 25px;
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.03);
+    transition: all 0.3s ease;
+}
+
+.usage-item:hover {
+    transform: translateX(5px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+}
+
+.usage-number {
+    min-width: 40px;
+    height: 40px;
+    background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 1.1rem;
+}
+
+.usage-text h4 {
+    font-size: 1.2rem;
+    margin-bottom: 8px;
+    color: #2d2d2d;
+}
+
+.usage-text p {
+    color: #666;
+    line-height: 1.6;
+}
+
+/* Sharing List */
+.sharing-list {
+    list-style-type: none;
+    margin: 25px 0;
+}
+
+.sharing-list li {
+    padding: 12px 0;
+    padding-left: 30px;
+    position: relative;
+    color: #555;
+}
+
+.sharing-list li::before {
+    content: '✓';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 22px;
+    height: 22px;
+    background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+}
+
+/* Rights Grid */
+.rights-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 25px;
+    margin-top: 30px;
+}
+
+.right-item {
+    background: white;
+    padding: 25px;
+    border-radius: 16px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.03);
+    transition: all 0.3s ease;
+}
+
+.right-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+}
+
+.right-item h4 {
+    font-size: 1.2rem;
+    margin-bottom: 12px;
+    color: #2d2d2d;
+}
+
+.right-item p {
+    color: #666;
+    line-height: 1.6;
+}
+
+/* Security Features */
+.security-features {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 25px;
+    margin-top: 30px;
+}
+
+.security-feature {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 20px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.03);
+}
+
+.security-icon {
+    width: 50px;
+    height: 50px;
+    background: linear-gradient(135deg, #f8f6ff 0%, #fdf2f8 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #6a11cb;
+    font-size: 20px;
+    flex-shrink: 0;
+}
+
+.security-feature p {
+    color: #555;
+    font-weight: 500;
+}
+
+/* Contact Section */
+.contact-section {
+    text-align: center;
+    background: linear-gradient(135deg, #f8f6ff 0%, #fdf2f8 100%);
+    padding: 50px;
+    border-radius: 20px;
+}
+
+.contact-options {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    margin-top: 30px;
+    flex-wrap: wrap;
+}
+
+.contact-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 15px 25px;
+    background: white;
+    border-radius: 50px;
+    color: #6a11cb;
+    text-decoration: none;
+    font-weight: 600;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+}
+
+.contact-link:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    color: #2575fc;
+}
+
+/* Update Date */
+.update-date {
+    text-align: center;
+    padding: 20px;
+    color: #888;
+    border-top: 1px solid #eee;
+    margin-top: 40px;
+}
+
+/* Icons (using Unicode or custom font if available) */
+.icon-user::before { content: "👤"; }
+.icon-browser::before { content: "💻"; }
+.icon-cookie::before { content: "🍪"; }
+.icon-lock::before { content: "🔒"; }
+.icon-shield::before { content: "🛡️"; }
+.icon-vault::before { content: "🗄️"; }
+.icon-mail::before { content: "✉️"; }
+.icon-form::before { content: "📋"; }
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .hero-title {
+        font-size: 2.5rem;
+    }
+    
+    .hero-subtitle {
+        font-size: 1.1rem;
+    }
+    
+    .section-title {
+        font-size: 1.7rem;
+    }
+    
+    .info-cards, .rights-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .usage-item {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .security-features {
+        grid-template-columns: 1fr;
+    }
+    
+    .contact-options {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .contact-link {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+/* Animation for elements as they appear */
+[data-aos] {
+    opacity: 0;
+    transition-property: opacity, transform;
+}
+
+[data-aos].aos-animate {
+    opacity: 1;
+}
+
+
+</style>
+
+<div class="privacy-container">
+    <!-- Animated Header Section -->
+    <section class="privacy-hero">
+        <div class="p-hero-content">
+            <h1 class="p-hero-title" data-aos="fade-up">Privacy Policy</h1>
+            <p class="p-hero-subtitle" data-aos="fade-up" data-aos-delay="200">
+                At Ellana FashionHub, your privacy is our priority. We're committed to protecting your personal information with transparency and care.
+            </p>
+        </div>
+        <div class="p-hero-visual" data-aos="zoom-in" data-aos-delay="400">
+            <div class="privacy-shield"></div>
+        </div>
+    </section>
+
+    <!-- Policy Content Section -->
+    <section class="policy-content">
+        <div class="content-wrapper">
+            <!-- Introduction -->
+            <div class="policy-section" data-aos="fade-right">
+                <h2 class="section-title">Introduction</h2>
+                <p class="section-text">
+                    Welcome to Ellana FashionHub's Privacy Policy. This policy describes how we collect, use, and share your personal information when you visit our website, make a purchase, or interact with us.
+                </p>
+            </div>
+
+            <!-- Information Collection -->
+            <div class="policy-section" data-aos="fade-left">
+                <h2 class="section-title">Information We Collect</h2>
+                <div class="info-cards">
+                    <div class="info-card">
+                        <div class="card-icon">
+                            <i class="icon-user"></i>
+                        </div>
+                        <h3>Personal Information</h3>
+                        <p>Name, email address, shipping address, and payment information provided during checkout.</p>
+                    </div>
+                    <div class="info-card">
+                        <div class="card-icon">
+                            <i class="icon-browser"></i>
+                        </div>
+                        <h3>Technical Data</h3>
+                        <p>IP address, browser type, device information, and pages visited on our site.</p>
+                    </div>
+                    <div class="info-card">
+                        <div class="card-icon">
+                            <i class="icon-cookie"></i>
+                        </div>
+                        <h3>Cookies & Tracking</h3>
+                        <p>Information about your browsing behavior through cookies and similar technologies.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- How We Use Information -->
+            <div class="policy-section" data-aos="fade-right">
+                <h2 class="section-title">How We Use Your Information</h2>
+                <div class="usage-list">
+                    <div class="usage-item">
+                        <span class="usage-number">1</span>
+                        <div class="usage-text">
+                            <h4>Order Processing & Fulfillment</h4>
+                            <p>To process and deliver your purchases, and to manage returns or exchanges.</p>
+                        </div>
+                    </div>
+                    <div class="usage-item">
+                        <span class="usage-number">2</span>
+                        <div class="usage-text">
+                            <h4>Customer Communication</h4>
+                            <p>To send order confirmations, delivery updates, and respond to your inquiries.</p>
+                        </div>
+                    </div>
+                    <div class="usage-item">
+                        <span class="usage-number">3</span>
+                        <div class="usage-text">
+                            <h4>Personalized Experience</h4>
+                            <p>To provide product recommendations and content tailored to your preferences.</p>
+                        </div>
+                    </div>
+                    <div class="usage-item">
+                        <span class="usage-number">4</span>
+                        <div class="usage-text">
+                            <h4>Marketing Communications</h4>
+                            <p>To send promotional offers, fashion updates, and news (with your consent).</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Data Sharing -->
+            <div class="policy-section" data-aos="fade-left">
+                <h2 class="section-title">Data Sharing & Disclosure</h2>
+                <p class="section-text">
+                    We value your trust and only share your information with third parties when necessary for business operations:
+                </p>
+                <ul class="sharing-list">
+                    <li>Payment processors to securely handle transactions</li>
+                    <li>Shipping carriers to deliver your orders</li>
+                    <li>Service providers who assist with website operations</li>
+                    <li>When required by law or to protect our rights</li>
+                </ul>
+                <p class="section-text">
+                    We never sell your personal information to third parties for marketing purposes.
+                </p>
+            </div>
+
+            <!-- Your Rights -->
+            <div class="policy-section" data-aos="fade-right">
+                <h2 class="section-title">Your Privacy Rights</h2>
+                <div class="rights-grid">
+                    <div class="right-item">
+                        <h4>Access & Correction</h4>
+                        <p>You can access and update your personal information in your account settings.</p>
+                    </div>
+                    <div class="right-item">
+                        <h4>Data Portability</h4>
+                        <p>You can request a copy of your personal data in a machine-readable format.</p>
+                    </div>
+                    <div class="right-item">
+                        <h4>Marketing Preferences</h4>
+                        <p>You can opt-out of marketing communications at any time using the unsubscribe link.</p>
+                    </div>
+                    <div class="right-item">
+                        <h4>Account Deletion</h4>
+                        <p>You can request deletion of your account and associated personal data.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Security -->
+            <div class="policy-section" data-aos="fade-left">
+                <h2 class="section-title">Data Security</h2>
+                <p class="section-text">
+                    We implement industry-standard security measures to protect your information, including:
+                </p>
+                <div class="security-features">
+                    <div class="security-feature">
+                        <div class="security-icon">
+                            <i class="icon-lock"></i>
+                        </div>
+                        <p>SSL encryption for all data transmissions</p>
+                    </div>
+                    <div class="security-feature">
+                        <div class="security-icon">
+                            <i class="icon-shield"></i>
+                        </div>
+                        <p>Secure payment processing</p>
+                    </div>
+                    <div class="security-feature">
+                        <div class="security-icon">
+                            <i class="icon-vault"></i>
+                        </div>
+                        <p>Restricted access to personal data</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Contact -->
+            <div class="policy-section contact-section" data-aos="zoom-in">
+                <h2 class="section-title">Contact Us</h2>
+                <p class="section-text">
+                    If you have any questions about our Privacy Policy or how we handle your data, please contact our Privacy Team:
+                </p>
+                <div class="contact-options">
+                    <a href="mailto:privacy@ellanafashionhub.com" class="contact-link">
+                        <i class="icon-mail"></i> privacy@ellanafashionhub.com
+                    </a>
+                    <a href="{% url 'contact' %}" class="contact-link">
+                        <i class="icon-form"></i> Contact Form
+                    </a>
+                </div>
+            </div>
+
+            <!-- Last Updated -->
+            <div class="update-date" data-aos="fade-up">
+                <p><strong>Last Updated:</strong> January 1, 2023</p>
+            </div>
+        </div>
+    </section>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<!-- AOS Animation Library -->
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<script>
+    // Initialize animations
+    document.addEventListener('DOMContentLoaded', function() {
+        AOS.init({
+            duration: 800,
+            easing: 'ease-in-out',
+            once: true,
+            offset: 100
+        });
+    });
+</script>
+{% endblock %}

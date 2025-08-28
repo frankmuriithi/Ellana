@@ -1,0 +1,21 @@
+{% extends "core/base.html" %}
+{% block content %}
+  <div class="confirmation-container">
+    <h2>Order Confirmation</h2>
+    <p>Thank you for your order!</p>
+    <p>Your order number is: <strong>{{ order.id }}</strong></p>
+    <p>Status: {{ order.status }}</p>
+    <p>Total Amount: Ksh {{ order.total_amount }}</p>
+    <p>Payment Method: {{ order.payment_method }}</p>
+
+    <h3>Order Details</h3>
+    <ul>
+      {% for item in order.items.all %}
+        <li>{{ item.outfit.name }} ({{ item.quantity }}) - Ksh {{ item.price }}</li>
+      {% endfor %}
+    </ul>
+
+    <a href="{% url 'view_cart' %}" class="btn btn-primary">View Cart</a>
+  </div>
+{% endblock %}
+

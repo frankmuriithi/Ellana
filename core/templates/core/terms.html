@@ -1,0 +1,552 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}Terms of Service | Ellana FashionHub{% endblock %}
+
+
+{% block content %}
+
+<style>
+    
+/* Terms of Service Styling */
+:root {
+    --primary-color: #e83e8c;
+    --secondary-color: #6f42c1;
+    --accent-color: #20c997;
+    --dark-color: #343a40;
+    --light-color: #f8f9fa;
+    --text-color: #495057;
+    --border-radius: 12px;
+    --box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    --transition: all 0.3s ease;
+}
+
+/* Hero Section */
+.terms-hero {
+    background: linear-gradient(135deg, var(--secondary-color) 0%, var(--primary-color) 100%);
+    color: white;
+    padding: 80px 0 120px;
+    position: relative;
+    text-align: center;
+    overflow: hidden;
+}
+
+.t-hero-content {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 0 20px;
+    position: relative;
+    z-index: 2;
+}
+
+.t-hero-title {
+    font-size: 3.5rem;
+    font-weight: 800;
+    margin-bottom: 15px;
+    animation: fadeInDown 1s ease;
+}
+
+.t-hero-subtitle {
+    font-size: 1.2rem;
+    opacity: 0.9;
+    animation: fadeInUp 1s ease;
+}
+
+.t-hero-wave {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    overflow: hidden;
+    line-height: 0;
+}
+
+.t-hero-wave svg {
+    position: relative;
+    display: block;
+    width: calc(100% + 1.3px);
+    height: 100px;
+}
+
+.t-hero-wave .shape-fill {
+    fill: #FFFFFF;
+}
+
+/* Main Container */
+.terms-container {
+    display: flex;
+    max-width: 1200px;
+    margin: -60px auto 60px;
+    padding: 0 20px;
+    gap: 30px;
+    position: relative;
+}
+
+/* Sidebar Navigation */
+.terms-sidebar {
+    flex: 0 0 280px;
+    position: sticky;
+    align-self: flex-start;
+    top: 100px;
+}
+
+.sidebar-sticky {
+    background: white;
+    border-radius: var(--border-radius);
+    padding: 25px;
+    box-shadow: var(--box-shadow);
+}
+
+.sidebar-sticky h3 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    color: var(--dark-color);
+    font-size: 1.3rem;
+    position: relative;
+    padding-bottom: 10px;
+}
+
+.sidebar-sticky h3::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 40px;
+    height: 3px;
+    background: var(--primary-color);
+    border-radius: 3px;
+}
+
+.terms-nav {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.terms-nav li {
+    margin-bottom: 12px;
+}
+
+.nav-link {
+    display: block;
+    padding: 10px 15px;
+    color: var(--text-color);
+    text-decoration: none;
+    border-radius: 8px;
+    transition: var(--transition);
+    position: relative;
+    overflow: hidden;
+}
+
+.nav-link::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(232, 62, 140, 0.1), transparent);
+    transition: var(--transition);
+}
+
+.nav-link:hover::before {
+    left: 100%;
+}
+
+.nav-link:hover, .nav-link.active {
+    background-color: rgba(232, 62, 140, 0.1);
+    color: var(--primary-color);
+    transform: translateX(5px);
+}
+
+/* Content Area */
+.terms-content {
+    flex: 1;
+}
+
+.terms-card {
+    background: white;
+    border-radius: var(--border-radius);
+    padding: 30px;
+    margin-bottom: 30px;
+    box-shadow: var(--box-shadow);
+    transition: var(--transition);
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeInUp 0.6s ease forwards;
+}
+
+.terms-card:nth-child(1) { animation-delay: 0.1s; }
+.terms-card:nth-child(2) { animation-delay: 0.2s; }
+.terms-card:nth-child(3) { animation-delay: 0.3s; }
+.terms-card:nth-child(4) { animation-delay: 0.4s; }
+.terms-card:nth-child(5) { animation-delay: 0.5s; }
+.terms-card:nth-child(6) { animation-delay: 0.6s; }
+.terms-card:nth-child(7) { animation-delay: 0.7s; }
+.terms-card:nth-child(8) { animation-delay: 0.8s; }
+.terms-card:nth-child(9) { animation-delay: 0.9s; }
+
+.terms-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+}
+
+.terms-heading {
+    color: var(--dark-color);
+    margin-top: 0;
+    margin-bottom: 20px;
+    font-size: 1.8rem;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.heading-icon {
+    font-size: 1.5rem;
+}
+
+.terms-content p {
+    line-height: 1.7;
+    color: var(--text-color);
+    margin-bottom: 15px;
+}
+
+.terms-content ul {
+    padding-left: 20px;
+    margin-bottom: 20px;
+}
+
+.terms-content li {
+    margin-bottom: 10px;
+    line-height: 1.6;
+}
+
+/* Acceptance Box */
+.terms-acceptance {
+    margin-top: 40px;
+}
+
+.acceptance-box {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border-radius: var(--border-radius);
+    padding: 30px;
+    text-align: center;
+    border-left: 4px solid var(--accent-color);
+}
+
+.accept-btn {
+    background: linear-gradient(135deg, var(--secondary-color) 0%, var(--primary-color) 100%);
+    color: white;
+    border: none;
+    padding: 12px 30px;
+    border-radius: 50px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+    margin-top: 15px;
+    box-shadow: 0 5px 15px rgba(232, 62, 140, 0.3);
+}
+
+.accept-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(232, 62, 140, 0.4);
+}
+
+/* Animations */
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Responsive Design */
+@media (max-width: 992px) {
+    .terms-container {
+        flex-direction: column;
+    }
+    
+    .terms-sidebar {
+        flex: 0 0 auto;
+        width: 100%;
+        position: static;
+        margin-bottom: 30px;
+    }
+    
+    .sidebar-sticky {
+        position: sticky;
+        top: 80px;
+        z-index: 10;
+    }
+    
+    .hero-title {
+        font-size: 2.8rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .terms-hero {
+        padding: 60px 0 100px;
+    }
+    
+    .hero-title {
+        font-size: 2.2rem;
+    }
+    
+    .terms-card {
+        padding: 20px;
+    }
+    
+    .terms-heading {
+        font-size: 1.5rem;
+    }
+}
+
+</style>
+<section class="terms-hero">
+    <div class="t-hero-content">
+        <h1 class="t-hero-title">Terms of Service</h1>
+        <p class="t-hero-subtitle">Last updated: <span id="current-date"></span></p>
+    </div>
+    <div class="t-hero-wave">
+        <svg data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none">
+            <path d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V0H0V27.35A600.21,600.21,0,0,0,321.39,56.44Z" class="shape-fill"></path>
+        </svg>
+    </div>
+</section>
+
+<section class="terms-container">
+    <div class="terms-sidebar">
+        <div class="sidebar-sticky">
+            <h3>Quick Navigation</h3>
+            <ul class="terms-nav">
+                <li><a href="#introduction" class="nav-link active">Introduction</a></li>
+                <li><a href="#accounts" class="nav-link">Accounts</a></li>
+                <li><a href="#products" class="nav-link">Products</a></li>
+                <li><a href="#intellectual-property" class="nav-link">Intellectual Property</a></li>
+                <li><a href="#user-content" class="nav-link">User Content</a></li>
+                <li><a href="#termination" class="nav-link">Termination</a></li>
+                <li><a href="#limitation" class="nav-link">Limitation of Liability</a></li>
+                <li><a href="#changes" class="nav-link">Changes to Terms</a></li>
+                <li><a href="#contact" class="nav-link">Contact Us</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="terms-content">
+        <div class="terms-card" id="introduction">
+            <h2 class="terms-heading">
+                <span class="heading-icon">📋</span>
+                Introduction
+            </h2>
+            <p>Welcome to Ellana FashionHub! These Terms of Service govern your use of our website located at www.ellanafashionhub.com and form a binding contractual agreement between you, the user of the Site and us, Ellana FashionHub.</p>
+            <p>For this reason, these Terms are important and you should ensure that you read them carefully and contact us with any questions before you use the Site. You can contact us at legal@ellanafashionhub.com.</p>
+            <p>By using the Site you acknowledge and agree that you have had sufficient chance to read and understand the Terms and you agree to be bound by them. If you do not agree to the Terms, please do not use the Site.</p>
+        </div>
+
+        <div class="terms-card" id="accounts">
+            <h2 class="terms-heading">
+                <span class="heading-icon">👤</span>
+                Accounts
+            </h2>
+            <p>When you create an account with us, you must provide us with information that is accurate, complete, and current at all times. Failure to do so constitutes a breach of the Terms, which may result in immediate termination of your account on our Service.</p>
+            <p>You are responsible for safeguarding the password that you use to access the Service and for any activities or actions under your password, whether your password is with our Service or a third-party service.</p>
+            <p>You agree not to disclose your password to any third party. You must notify us immediately upon becoming aware of any breach of security or unauthorized use of your account.</p>
+        </div>
+
+        <div class="terms-card" id="products">
+            <h2 class="terms-heading">
+                <span class="heading-icon">👗</span>
+                Products
+            </h2>
+            <p>All products are subject to availability. We reserve the right to discontinue any products at any time for any reason. Prices for all products are subject to change.</p>
+            <p>We have made every effort to display as accurately as possible the colors and images of our products that appear at the store. We cannot guarantee that your computer monitor's display of any color will be accurate.</p>
+            <p>We reserve the right, but are not obligated, to limit the sales of our products to any person, geographic region or jurisdiction. We may exercise this right on a case-by-case basis.</p>
+        </div>
+
+        <div class="terms-card" id="intellectual-property">
+            <h2 class="terms-heading">
+                <span class="heading-icon">©️</span>
+                Intellectual Property
+            </h2>
+            <p>The Site and its original content, features, and functionality are and will remain the exclusive property of Ellana FashionHub and its licensors. The Site is protected by copyright, trademark, and other laws of both the United States and foreign countries.</p>
+            <p>Our trademarks and trade dress may not be used in connection with any product or service without the prior written consent of Ellana FashionHub.</p>
+            <p>You may not duplicate, copy, or reuse any portion of the HTML/CSS, Javascript, or visual design elements without express written permission from Ellana FashionHub.</p>
+        </div>
+
+        <div class="terms-card" id="user-content">
+            <h2 class="terms-heading">
+                <span class="heading-icon">💬</span>
+                User Content
+            </h2>
+            <p>Our Service allows you to post, link, store, share and otherwise make available certain information, text, graphics, videos, or other material ("Content"). You are responsible for the Content that you post to the Service, including its legality, reliability, and appropriateness.</p>
+            <p>By posting Content to the Service, you grant us the right and license to use, modify, publicly perform, publicly display, reproduce, and distribute such Content on and through the Service. You retain any and all of your rights to any Content you submit, post or display on or through the Service and you are responsible for protecting those rights.</p>
+        </div>
+
+        <div class="terms-card" id="termination">
+            <h2 class="terms-heading">
+                <span class="heading-icon">🔚</span>
+                Termination
+            </h2>
+            <p>We may terminate or suspend your account immediately, without prior notice or liability, for any reason whatsoever, including without limitation if you breach the Terms.</p>
+            <p>Upon termination, your right to use the Service will immediately cease. If you wish to terminate your account, you may simply discontinue using the Service.</p>
+            <p>All provisions of the Terms which by their nature should survive termination shall survive termination, including, without limitation, ownership provisions, warranty disclaimers, indemnity and limitations of liability.</p>
+        </div>
+
+        <div class="terms-card" id="limitation">
+            <h2 class="terms-heading">
+                <span class="heading-icon">⚖️</span>
+                Limitation of Liability
+            </h2>
+            <p>In no event shall Ellana FashionHub, nor its directors, employees, partners, agents, suppliers, or affiliates, be liable for any indirect, incidental, special, consequential or punitive damages, including without limitation, loss of profits, data, use, goodwill, or other intangible losses, resulting from:</p>
+            <ul>
+                <li>Your access to or use of or inability to access or use the Service</li>
+                <li>Any conduct or content of any third party on the Service</li>
+                <li>Any content obtained from the Service</li>
+                <li>Unauthorized access, use or alteration of your transmissions or content</li>
+            </ul>
+        </div>
+
+        <div class="terms-card" id="changes">
+            <h2 class="terms-heading">
+                <span class="heading-icon">🔄</span>
+                Changes to Terms
+            </h2>
+            <p>We reserve the right, at our sole discretion, to modify or replace these Terms at any time. If a revision is material we will provide at least 30 days' notice prior to any new terms taking effect. What constitutes a material change will be determined at our sole discretion.</p>
+            <p>By continuing to access or use our Service after those revisions become effective, you agree to be bound by the revised terms. If you do not agree to the new terms, please stop using the Service.</p>
+        </div>
+
+        <div class="terms-card" id="contact">
+            <h2 class="terms-heading">
+                <span class="heading-icon">📞</span>
+                Contact Us
+            </h2>
+            <p>If you have any questions about these Terms, please contact us:</p>
+            <ul>
+                <li>By email: legal@ellanafashionhub.com</li>
+                <li>By visiting this page on our website: www.ellanafashionhub.com/contact</li>
+                <li>By phone: +1 (800) 555-FASHION</li>
+                <li>By mail: 123 Fashion Avenue, New York, NY 10001</li>
+            </ul>
+        </div>
+
+        <div class="terms-acceptance">
+            <div class="acceptance-box">
+                <p>By using our website, you acknowledge that you have read and understood our Terms of Service.</p>
+                <button class="accept-btn">I Accept</button>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+    // Set current date in the hero section
+    const currentDateElement = document.getElementById('current-date');
+    if (currentDateElement) {
+        const currentDate = new Date();
+        const options = { year: 'numeric', month: 'long', day: 'numeric' };
+        currentDateElement.textContent = currentDate.toLocaleDateString('en-US', options);
+    }
+    
+    // Smooth scrolling for navigation links
+    const navLinks = document.querySelectorAll('.nav-link');
+    
+    navLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            const targetId = this.getAttribute('href');
+            const targetElement = document.querySelector(targetId);
+            
+            if (targetElement) {
+                // Update active class
+                navLinks.forEach(navLink => navLink.classList.remove('active'));
+                this.classList.add('active');
+                
+                // Scroll to section
+                window.scrollTo({
+                    top: targetElement.offsetTop - 100,
+                    behavior: 'smooth'
+                });
+            }
+        });
+    });
+    
+    // Highlight active section on scroll
+    const termsSections = document.querySelectorAll('.terms-card');
+    
+    function highlightActiveSection() {
+        let scrollPosition = window.scrollY + 150;
+        
+        termsSections.forEach(section => {
+            const sectionTop = section.offsetTop;
+            const sectionHeight = section.offsetHeight;
+            const sectionId = section.getAttribute('id');
+            
+            if (scrollPosition >= sectionTop && scrollPosition < sectionTop + sectionHeight) {
+                navLinks.forEach(link => {
+                    link.classList.remove('active');
+                    if (link.getAttribute('href') === `#${sectionId}`) {
+                        link.classList.add('active');
+                    }
+                });
+            }
+        });
+    }
+    
+    window.addEventListener('scroll', highlightActiveSection);
+    
+    // Acceptance button interaction
+    const acceptButton = document.querySelector('.accept-btn');
+    if (acceptButton) {
+        acceptButton.addEventListener('click', function() {
+            this.textContent = 'Accepted!';
+            this.style.background = 'linear-gradient(135deg, #20c997 0%, #198754 100%)';
+            this.style.boxShadow = '0 5px 15px rgba(32, 201, 151, 0.3)';
+            
+            // Create a confirmation message
+            const confirmation = document.createElement('p');
+            confirmation.textContent = 'Thank you for accepting our Terms of Service!';
+            confirmation.style.marginTop = '15px';
+            confirmation.style.fontWeight = '600';
+            confirmation.style.color = '#198754';
+            
+            this.parentNode.appendChild(confirmation);
+            
+            // Disable button after click
+            this.disabled = true;
+        });
+    }
+    
+    // Add subtle animation to cards on hover
+    const cards = document.querySelectorAll('.terms-card');
+    cards.forEach(card => {
+        card.addEventListener('mouseenter', function() {
+            this.style.transform = 'translateY(-5px)';
+        });
+        
+        card.addEventListener('mouseleave', function() {
+            this.style.transform = 'translateY(0)';
+        });
+    });
+});
+</script>
+
+{% endblock %}
+
